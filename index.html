@@ -176,6 +176,7 @@
     </div>
     <p class="karbon" id="karbon"></p>
     <p class="maliyet" id="maliyetYazi"></p>
+    <p class="kaynak" id="rakamKaynak"></p>
     <p class="kis-uyari" id="kisUyari" hidden></p>
 
     <div class="karsilastir" id="sacakKarsilastir">
@@ -339,7 +340,7 @@
       <p class="dipnot" id="otoNot">Panjur/saçak köprüsüne POST JSON. MQTT: golge-saati/sacak/open|close</p>
     </details>
 
-    <p class="dipnot" id="dipnot">Yıllık hesap, İstanbul iklim ağırlıklı sıcak gün takvimine göredir. 3B sahne İş Kuleleri referansıdır; diğer senaryolarda sayısal model geçerlidir.</p>
+    <p class="dipnot" id="dipnot">Yıllık kWh = günlük güneş farkı × klima kW × daire × sıcak gün. CO₂ = kWh × şebeke katsayısı. Güneş: astronomik model · iklim: İstanbul ay ağırlığı · bina: OSM · hava: Open-Meteo · CO₂: ~0,4 kg/kWh (TR şebeke yaklaşık). Detay: <a href="etki.html">etki.html</a></p>
   </aside>
 
   <p class="ipuclari">Sürükle · döndür · tekerlek ile yakınlaş</p>
@@ -348,12 +349,12 @@
   <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
   <script src="vendor/three.min.js"></script>
   <script src="vendor/OrbitControls.js"></script>
-  <script src="js/gunes.js?v=13"></script>
-  <script src="js/senaryolar.js?v=13"></script>
-  <script src="js/ekler.js?v=13"></script>
-  <script src="js/bluetooth.js?v=13"></script>
-  <script src="js/wifi.js?v=13"></script>
-  <script src="js/bina.js?v=13"></script>
-  <script src="js/uygulama.js?v=13"></script>
+  <script src="js/gunes.js?v=14"></script>
+  <script src="js/senaryolar.js?v=14"></script>
+  <script src="js/ekler.js?v=14"></script>
+  <script src="js/bluetooth.js?v=14"></script>
+  <script src="js/wifi.js?v=14"></script>
+  <script src="js/bina.js?v=14"></script>
+  <script src="js/uygulama.js?v=14"></script>
 </body>
 </html>

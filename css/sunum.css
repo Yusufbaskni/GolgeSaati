@@ -278,6 +278,22 @@ body.mod-etki .rakam strong { color: #14110e; }
 }
 body.mod-etki .rakam span { color: #7a6250; }
 
+.kaynak {
+  margin: 28px 0 0;
+  max-width: 780px;
+  font-size: clamp(11px, 1.35vw, 13px);
+  font-weight: 600;
+  letter-spacing: 0.02em;
+  line-height: 1.55;
+  color: rgba(246, 241, 232, 0.48);
+  border-top: 1px solid rgba(246, 241, 232, 0.14);
+  padding-top: 14px;
+}
+body.mod-etki .kaynak {
+  color: rgba(28, 25, 20, 0.55);
+  border-top-color: rgba(28, 25, 20, 0.16);
+}
+
 .karsilastir {
   display: grid;
   grid-template-columns: 1fr auto 1fr;

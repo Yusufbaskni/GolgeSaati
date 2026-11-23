@@ -18,17 +18,28 @@
     </nav>
   </header>
   <article class="sayfa">
-    <p>Kaynak: seçilen cephedeki birimlerde klimanın çalıştığı süre. Birim: kWh. Maliyet TL/kWh ile, karbon şebeke katsayısıyla yazılır.</p>
+    <p>Rakamlar, seçilen cephede klimanın güneş yükü yüzünden çalıştığı süreden türetilir. Birim: kWh. Maliyet TL/kWh ile, karbon şebeke katsayısıyla yazılır.</p>
     <h2>Formül</h2>
     <p>Günlük fark = (çıplak güneşli saat − saçaklı güneşli saat) × (1 − bulut) + kalibrasyon.</p>
-    <p>Yıllık kWh = Σ (günlük fark × klima kW × daire × ayın efektif sıcak günü).</p>
-    <p>Efektif sıcak günler, ayın gün sayısı × iklim ağırlığıdır (haz–eyl yüksek, kış sıfıra yakın). Geri ödeme = yatırım TL ÷ yıllık TL tasarrufu.</p>
+    <p>Yıllık kWh = Σ (günlük fark × klima kW × daire × ayın efektif sıcak günü × SHGC/0,65).</p>
+    <p>CO₂ (kg) = yıllık kWh × CO₂ katsayısı (varsayılan 0,4 kg/kWh). TL = yıllık kWh × elektrik fiyatı.</p>
+    <p>Efektif sıcak günler = ayın gün sayısı × iklim ağırlığı (haz–eyl yüksek, kış sıfıra yakın). Geri ödeme = yatırım TL ÷ yıllık TL tasarrufu.</p>
+    <h2>Kaynaklar</h2>
+    <ul>
+      <li><strong>Güneş konumu</strong> — astronomik deklinasyon + saat açısı; seçilen enlem/boylam (İstanbul varsayılan).</li>
+      <li><strong>Sıcak gün takvimi</strong> — İstanbul yazına göre basitleştirilmiş ay ağırlıkları (MGM iklim normallerine yakın yaklaşım; ölçüm değil).</li>
+      <li><strong>Klima kW / daire</strong> — senaryo varsayımı; uygulamada düzenlenir (sunum örneği: 1,2 kW × 5 daire).</li>
+      <li><strong>CO₂ katsayısı</strong> — Türkiye şebeke yaklaşık ~0,4 kg CO₂/kWh (varsayılan; parametrede değiştirilebilir).</li>
+      <li><strong>Cam SHGC</strong> — tipik cam tipi tablosu (Low-E / çift / tek).</li>
+      <li><strong>Bina kütlesi</strong> — OpenStreetMap / Overpass (İş Kuleleri ve seçilen cephe).</li>
+      <li><strong>Dış hava</strong> — Open-Meteo anlık sıcaklık.</li>
+    </ul>
     <h2>Gölge modeli</h2>
     <p>Güneş yüksekliği ve azimutu seçilen enleme göredir. Cam, güneş cephe önündeyse ve saçak pencere yüksekliğinin yarısından azını örtüyorsa güneşli sayılır. Engel ufku, komşu binanın güneşi kestiği minimum yükseklik açısıdır.</p>
     <h2>Uygulamada</h2>
     <p>Bina senaryosu, saçak cm, pencere, cephe azimutu, daire, kW, enlem, engel, bulut, kalibrasyon, elektrik fiyatı ve yatırım tutarı düzenlenebilir. Ölçülen sıcak saat girilirse kalibrasyon otomatik ayarlanır. CSV ve PDF rapor, localStorage senaryoları ve paylaşım bağlantısı vardır.</p>
     <h2>Varsayımlar</h2>
-    <p>3B sahne İş Kuleleri OSM referansıdır. Diğer senaryolar sayısal modeldir. Bulut katsayısı basitleştirilmiş kayıptır. Gerçek fatura doğrulaması için kalibrasyon alanını kullanın.</p>
+    <p>3B sahne İş Kuleleri OSM referansıdır. Diğer senaryolar sayısal modeldir. Bulut katsayısı basitleştirilmiş kayıptır. Gerçek fatura doğrulaması için kalibrasyon alanını kullanın. Sunumdaki ~1&nbsp;000 kWh / 400&nbsp;kg örneği: 3,3 sa × 1,2 kW × 5 daire × 50 sıcak gün × 0,4 kg/kWh.</p>
   </article>
 </body>
 </html>

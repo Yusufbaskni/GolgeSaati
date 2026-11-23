@@ -44,6 +44,7 @@
   var sacakSaat = document.getElementById("sacakSaat");
   var farkSaat = document.getElementById("farkSaat");
   var yilKwh = document.getElementById("yilKwh");
+  var rakamKaynak = document.getElementById("rakamKaynak");
   var karbon = document.getElementById("karbon");
   var maliyetYazi = document.getElementById("maliyetYazi");
   var konumYazi = document.getElementById("konumYazi");
@@ -698,6 +699,16 @@
       maliyetYazi.textContent = durum.maliyet > 0
         ? "Yatırım " + durum.maliyet.toLocaleString("tr-TR") + " TL → geri ödeme ~" + rapor.geriOdeme
         : "Yatırım girilmedi · geri ödeme hesaplanamaz";
+    }
+    if (rakamKaynak) {
+      rakamKaynak.textContent =
+        "Kaynak · Günlük fark: güneş/saçak modeli (" + durum.lat.toFixed(2) + "°N) · " +
+        "Yıllık ≈ " + fark.toFixed(1).replace(".", ",") + " sa × " +
+        String(durum.guc).replace(".", ",") + " kW × " + durum.daire +
+        " daire × ~" + yil.sicakGun + " sıcak gün (SHGC " +
+        (durum.shgc != null ? String(durum.shgc).replace(".", ",") : "0,65") + ") · " +
+        "CO₂: " + String(durum.katsayi).replace(".", ",") +
+        " kg/kWh (TR şebeke yaklaşık) · OSM + Open-Meteo · etki.html";
     }
 
     var dCiplak = camDerece(gunes, durum.sacak);
