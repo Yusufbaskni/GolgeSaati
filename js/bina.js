@@ -121,6 +121,28 @@
     }, 1024, 2048, 3, 8);
   }
 
+  function solarPerdeDokusu() {
+    return canvasTex(function (ctx, w, h) {
+      var i, y, band;
+      ctx.fillStyle = "#1a1c20";
+      ctx.fillRect(0, 0, w, h);
+      band = h / 22;
+      for (i = 0; i < 22; i++) {
+        y = i * band;
+        // Güneş paneli şeritleri (Solar Curtain zebra)
+        ctx.fillStyle = i % 2 === 0 ? "#0c1014" : "#2a3238";
+        ctx.fillRect(0, y, w, band * 0.72);
+        ctx.fillStyle = "rgba(80, 120, 90, 0.18)";
+        ctx.fillRect(0, y + 1, w, band * 0.2);
+        ctx.fillStyle = "rgba(255, 220, 140, 0.06)";
+        ctx.fillRect(w * 0.08, y + band * 0.15, w * 0.2, band * 0.25);
+      }
+      ctx.strokeStyle = "rgba(200, 180, 120, 0.25)";
+      ctx.lineWidth = 4;
+      ctx.strokeRect(6, 6, w - 12, h - 12);
+    }, 512, 1024, 1, 1);
+  }
+
   function camCepheDokusu() {
     return canvasTex(function (ctx, w, h) {
       var katH = h / 18;
@@ -655,59 +677,39 @@
           bolme: bolme, cepheDis: kenar.dis, yuz: YUZ
         });
 
-        // Saçak / balkon — tüm sıralarda hareketli
-        if (kat < KATLAR - 1 && hareketliSacak) {
-          var sacakGen = gen * 0.94;
-          var sacak = new THREE.Mesh(
-            new THREE.BoxGeometry(sacakGen, 0.16, 1),
+        // Solar Curtain — cam önünde inen panelli perde
+        if (hareketliSacak) {
+          var perdeH = camH * 0.96;
+          var perdeGen = gen * 0.92;
+          var perdeTex = solarPerdeDokusu();
+          var perde = new THREE.Mesh(
+            new THREE.BoxGeometry(perdeGen, perdeH, 0.05),
             new THREE.MeshStandardMaterial({
-              color: 0x2c2216,
-              metalness: 0.55,
-              roughness: 0.32,
+              map: perdeTex,
+              color: 0xffffff,
+              metalness: 0.35,
+              roughness: 0.45,
               envMap: envMap,
-              envMapIntensity: 0.45,
-              emissive: 0x3a2808,
-              emissiveIntensity: 0.15
+              envMapIntensity: 0.4,
+              emissive: 0x1a2818,
+              emissiveIntensity: 0.12
             })
           );
-          sacak.geometry.translate(0, 0, 0.5);
-          sacak.position.set(localX, z1 + 0.2, 0.35);
-          sacak.userData = { bolme: bolme, baz: 0.05, hareketli: true };
-          sacak.scale.z = sacak.userData.baz;
-          sacak.castShadow = true;
-          facade.add(sacak);
-          sacakMeshler.push(sacak);
+          perde.geometry.translate(0, -perdeH / 2, 0);
+          perde.position.set(localX, z1 - 0.05, 0.62);
+          perde.userData = { bolme: bolme, hareketli: true, perde: true, yuz: YUZ };
+          perde.scale.y = 0.04;
+          perde.castShadow = true;
+          facade.add(perde);
+          sacakMeshler.push(perde);
 
-          // Konsol destekleri
-          [-0.32, 0.32].forEach(function (ox) {
-            var destek = new THREE.Mesh(
-              new THREE.BoxGeometry(0.12, 0.12, 0.7),
-              metal
-            );
-            destek.position.set(localX + gen * ox, z1 + 0.08, 0.55);
-            destek.userData = { bolme: bolme, baz: 0.05, destek: true, hareketli: true };
-            destek.scale.z = 0.05;
-            facade.add(destek);
-            sacakMeshler.push(destek);
-          });
-
-          var alt = new THREE.Mesh(
-            new THREE.BoxGeometry(sacakGen * 0.96, 0.05, 1),
-            new THREE.MeshStandardMaterial({
-              color: 0xe8b45a,
-              emissive: 0xa87418,
-              emissiveIntensity: 0.45,
-              metalness: 0.5,
-              roughness: 0.3
-            })
+          // Üst kasa / ray
+          var ray = new THREE.Mesh(
+            new THREE.BoxGeometry(perdeGen * 1.02, 0.14, 0.12),
+            metalAltin
           );
-          alt.geometry.translate(0, 0, 0.5);
-          alt.position.set(localX, z1 + 0.08, 0.35);
-          alt.userData = { bolme: bolme, baz: 0.06, alt: true, hareketli: true };
-          alt.scale.z = 0.06;
-          alt.castShadow = true;
-          facade.add(alt);
-          sacakMeshler.push(alt);
+          ray.position.set(localX, z1 + 0.02, 0.62);
+          facade.add(ray);
         }
       }
     }
@@ -796,44 +798,27 @@
             bolme: b, cepheDis: k2.dis, yuz: idx
           });
 
-          if (kat2 < katAdet - 1) {
-            var sacak2 = new THREE.Mesh(
-              new THREE.BoxGeometry(gen2 * 0.94, 0.14, 1),
-              new THREE.MeshStandardMaterial({
-                color: 0x2c2216,
-                metalness: 0.5,
-                roughness: 0.35,
-                envMap: envMap,
-                envMapIntensity: 0.4,
-                emissive: 0x3a2808,
-                emissiveIntensity: 0.12
-              })
-            );
-            sacak2.geometry.translate(0, 0, 0.5);
-            sacak2.position.set(lx, z0 + camH2 + 0.12, 0.28);
-            sacak2.userData = { bolme: b, baz: 0.05, hareketli: true, yuz: idx };
-            sacak2.scale.z = 0.05;
-            sacak2.castShadow = true;
-            yan.add(sacak2);
-            sacakMeshler.push(sacak2);
-
-            var alt2 = new THREE.Mesh(
-              new THREE.BoxGeometry(gen2 * 0.9, 0.05, 1),
-              new THREE.MeshStandardMaterial({
-                color: 0xe8b45a,
-                emissive: 0xa87418,
-                emissiveIntensity: 0.35,
-                metalness: 0.45,
-                roughness: 0.3
-              })
-            );
-            alt2.geometry.translate(0, 0, 0.5);
-            alt2.position.set(lx, z0 + camH2 + 0.02, 0.28);
-            alt2.userData = { bolme: b, baz: 0.06, alt: true, hareketli: true, yuz: idx };
-            alt2.scale.z = 0.06;
-            yan.add(alt2);
-            sacakMeshler.push(alt2);
-          }
+          var perdeH2 = camH2 * 0.9;
+          var perde2 = new THREE.Mesh(
+            new THREE.BoxGeometry(gen2 * 0.9, perdeH2, 0.045),
+            new THREE.MeshStandardMaterial({
+              map: solarPerdeDokusu(),
+              color: 0xffffff,
+              metalness: 0.35,
+              roughness: 0.45,
+              envMap: envMap,
+              envMapIntensity: 0.35,
+              emissive: 0x1a2818,
+              emissiveIntensity: 0.1
+            })
+          );
+          perde2.geometry.translate(0, -perdeH2 / 2, 0);
+          perde2.position.set(lx, z0 + camH2 - 0.08, 0.4);
+          perde2.userData = { bolme: b, hareketli: true, perde: true, yuz: idx };
+          perde2.scale.y = 0.04;
+          perde2.castShadow = true;
+          yan.add(perde2);
+          sacakMeshler.push(perde2);
         }
       }
     });
@@ -1402,14 +1387,17 @@
     });
 
     sacakMeshler.forEach(function (s) {
-      var hedef = s.userData.baz;
-      if (s.userData.hareketli) {
-        hedef = Math.max(0.06, durum.sacakTaban + durum.sacakAnlik * Math.max(0.2, durum.sacakEk) * 1.7);
-        if (!s.userData.alt && !s.userData.destek && s.material && s.material.emissiveIntensity != null) {
-          s.material.color.setHex(durum.sacakAnlik > 0.25 ? 0xe8b45a : 0x1e1a16);
-          s.material.emissiveIntensity = durum.sacakAnlik > 0.25 ? 0.4 : 0.1;
+      if (!s.userData.hareketli) return;
+      if (s.userData.perde) {
+        // Solar Curtain: yukarıda toplanmış → aşağı inik
+        var hedefY = Math.max(0.04, 0.04 + durum.sacakAnlik * 0.96);
+        s.scale.y += (hedefY - s.scale.y) * 0.12;
+        if (s.material && s.material.emissiveIntensity != null) {
+          s.material.emissiveIntensity = 0.08 + durum.sacakAnlik * 0.35;
         }
+        return;
       }
+      var hedef = Math.max(0.06, durum.sacakTaban + durum.sacakAnlik * Math.max(0.2, durum.sacakEk) * 1.7);
       s.scale.z = Math.max(0.06, hedef);
     });
 

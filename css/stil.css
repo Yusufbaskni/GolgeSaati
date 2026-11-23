@@ -595,22 +595,29 @@ input[type="range"] {
   color: var(--soluk);
 }
 
+.panel-marka {
+  margin: -2px 0 4px !important;
+  font-size: 11px !important;
+}
+.panel-marka a { color: var(--gunes); }
+
 .sacak-dugme {
   display: grid;
   gap: 2px;
   text-align: left;
-  border: 1px solid rgba(232, 180, 90, 0.45);
-  background: linear-gradient(135deg, rgba(232, 180, 90, 0.22), rgba(226, 74, 46, 0.12));
+  border: 1px solid rgba(90, 160, 110, 0.45);
+  background: linear-gradient(135deg, rgba(58, 107, 72, 0.55), rgba(196, 160, 74, 0.22));
   padding: 14px 16px;
   transition: transform 0.2s ease, background 0.2s ease, border-color 0.2s ease;
+  box-shadow: 0 8px 24px rgba(20, 40, 28, 0.35);
 }
 
 .sacak-dugme:hover { transform: translateY(-1px); }
 
 .sacak-dugme[aria-pressed="true"] {
-  background: #f4efe6;
+  background: linear-gradient(135deg, #c8efd0, #f4efe6);
   color: var(--murekkep);
-  border-color: #f4efe6;
+  border-color: #9ed4a8;
 }
 
 .derece {

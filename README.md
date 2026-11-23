@@ -1,9 +1,9 @@
 # Gölge Saati
 
-İstanbul’da batıya bakan bir cephede, güneşin hangi cama hangi saatte vurduğunu gösterir. Klima açılmaz. **[Solar Curtain](https://solarcurtain.co)** paneli camı gölgeler (ve elektrik üretir); klima daha kısa çalışır.
+İstanbul’da batıya bakan bir cephede, güneşin hangi cama hangi saatte vurduğunu gösterir. Klima açılmaz. Sabit saçak yok — **[Solar Curtain](https://solarcurtain.co)** panelli perde iner, camı gölgeler ve elektrik üretir; klima daha kısa çalışır.
 
 **Kategori:** Şehir verisi (OSM + güneş modeli; kişisel klima verisi tutulmaz).  
-**Donanım / panel:** [solarcurtain.co](https://solarcurtain.co) — elektrik üreten akıllı perde (Türkiye).
+**Donanım:** [solarcurtain.co](https://solarcurtain.co) — Zebra / Blackout elektrik üreten akıllı perde (Türkiye).
 
 ## Etki (jüri özeti)
 

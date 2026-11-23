@@ -113,16 +113,17 @@
     <div class="serit-gun" id="seritGun" aria-label="Günün sıcak saatleri"></div>
 
     <div class="program" id="sacakProgram" aria-live="polite">
-      <p class="program-ust">Saçak açma zamanları</p>
+      <p class="program-ust">Solar Curtain · indirme saatleri</p>
       <p class="program-durum" id="programDurum">—</p>
       <ul class="program-liste" id="programListe"></ul>
       <p class="program-sonraki" id="programSonraki"></p>
     </div>
 
     <button type="button" class="sacak-dugme" id="sacak" aria-pressed="false">
-      <span class="sacak-etiket">Saçağı uygula</span>
-      <span class="sacak-ipucu">Klima saatini geciktir</span>
+      <span class="sacak-etiket">Panelli perdeyi indir</span>
+      <span class="sacak-ipucu">Gölgele · elektrik üret · klimayı geciktir</span>
     </button>
+    <p class="dipnot panel-marka">Donanım: <a href="https://solarcurtain.co" target="_blank" rel="noopener noreferrer">Solar Curtain</a> — kumaşa gömülü güneş paneli</p>
 
     <div class="derece" aria-live="polite">
       <div class="derece-baslik">
@@ -145,7 +146,7 @@
           <strong id="dereceCiplak">—</strong>
         </div>
         <div>
-          <span>Saçak</span>
+          <span>Perde inik</span>
           <strong id="dereceSacak">—</strong>
         </div>
         <div class="derece-fark">
@@ -161,7 +162,7 @@
         <strong id="ciplakSaat"></strong>
       </div>
       <div>
-        <span id="sacakEtiketSayi">Saçak</span>
+        <span id="sacakEtiketSayi">Perde inik</span>
         <strong id="sacakSaat"></strong>
       </div>
       <div class="vurgu">
@@ -184,10 +185,10 @@
     <p class="kis-uyari" id="kisUyari" hidden></p>
 
     <div class="karsilastir" id="sacakKarsilastir">
-      <p class="program-ust">Saçak seçenekleri</p>
+      <p class="program-ust">Solar Curtain modelleri</p>
       <table class="karsilastir-tablo" id="karsilastirTablo">
         <thead>
-          <tr><th>Saçak</th><th>Gün</th><th>Yıl kWh</th><th>Yıl TL</th><th></th></tr>
+          <tr><th>Model</th><th>Gün</th><th>Yıl kWh</th><th>Yıl TL</th><th></th></tr>
         </thead>
         <tbody></tbody>
       </table>
@@ -201,11 +202,11 @@
           <select id="pCam"></select>
         </label>
         <label class="alan">
-          <span>Saçak ek (cm)</span>
+          <span>Perde gölge eşdeğeri (cm)</span>
           <input id="pEk" type="number" min="10" max="200" step="5" value="60">
         </label>
         <label class="alan">
-          <span>Mevcut saçak (cm)</span>
+          <span>Mevcut dış gölge (cm)</span>
           <input id="pSacak" type="number" min="0" max="150" step="5" value="5">
         </label>
         <label class="alan">
@@ -292,38 +293,38 @@
     </details>
 
     <details class="katman" open>
-      <summary>Wi‑Fi saçak</summary>
+      <summary>Wi‑Fi Solar Curtain</summary>
       <p class="ble-durum" id="wifiDurum">Adres yok</p>
       <label class="alan">
         <span>Cihaz adresi (IP veya http://…)</span>
-        <input id="pWifiUrl" type="text" placeholder="192.168.1.50 veya http://sacak.local" autocomplete="off">
+        <input id="pWifiUrl" type="text" placeholder="192.168.1.50 veya http://perde.local" autocomplete="off">
       </label>
       <div class="eylemler">
         <button type="button" class="ikincil" id="btnWifiTest">Bağlantıyı dene</button>
-        <button type="button" class="ikincil" id="btnWifiAc">Wi‑Fi AÇ</button>
-        <button type="button" class="ikincil" id="btnWifiKapat">Wi‑Fi KAPAT</button>
+        <button type="button" class="ikincil" id="btnWifiAc">Perdeyi indir</button>
+        <button type="button" class="ikincil" id="btnWifiKapat">Perdeyi kaldır</button>
       </div>
       <label class="alan checkbox">
         <input id="wifiOtomatik" type="checkbox" checked>
-        <span>Program saçağı Wi‑Fi ile otomatik sür</span>
+        <span>Program perdesini Wi‑Fi ile otomatik sür</span>
       </label>
-      <p class="dipnot" id="wifiNot">POST /sacak/open · /sacak/close · GET /sacak/status (yedek: /open /close). ESP32 aynı Wi‑Fi ağında olmalı.</p>
+      <p class="dipnot" id="wifiNot">POST /sacak/open (indir) · /sacak/close (kaldır). Solar Curtain motoru aynı Wi‑Fi’da olmalı.</p>
     </details>
 
     <details class="katman">
-      <summary>Bluetooth saçak</summary>
+      <summary>Bluetooth Solar Curtain</summary>
       <p class="ble-durum" id="bleDurum">Bağlı değil</p>
       <div class="eylemler">
-        <button type="button" class="ikincil" id="btnBleBaglan">Saçağa bağlan</button>
+        <button type="button" class="ikincil" id="btnBleBaglan">Perdeye bağlan</button>
         <button type="button" class="ikincil" id="btnBleKopar">Kopar</button>
-        <button type="button" class="ikincil" id="btnBleAc">BLE AÇ</button>
-        <button type="button" class="ikincil" id="btnBleKapat">BLE KAPAT</button>
+        <button type="button" class="ikincil" id="btnBleAc">BLE indir</button>
+        <button type="button" class="ikincil" id="btnBleKapat">BLE kaldır</button>
       </div>
       <label class="alan checkbox">
         <input id="bleOtomatik" type="checkbox" checked>
-        <span>Program saçağı Bluetooth ile otomatik sür</span>
+        <span>Program perdesini Bluetooth ile otomatik sür</span>
       </label>
-      <p class="dipnot" id="bleNot">Cihaz adı: GolgeSaati / Saçak · Nordic UART (NUS). Komut: OPEN / CLOSE. Donanım yoksa sanal saçak ile demo.</p>
+      <p class="dipnot" id="bleNot">Cihaz: GolgeSaati / SolarCurtain · NUS. OPEN=indir · CLOSE=kaldır. Donanım yoksa sanal perde.</p>
     </details>
 
     <details class="katman">
@@ -334,14 +335,14 @@
       </label>
       <label class="alan">
         <span>MQTT konu (bilgi)</span>
-        <input id="pMqtt" type="text" value="golge-saati/sacak" readonly>
+        <input id="pMqtt" type="text" value="golge-saati/perde" readonly>
       </label>
       <div class="eylemler">
-        <button type="button" class="ikincil" id="btnOtoAc">AÇ sinyali</button>
-        <button type="button" class="ikincil" id="btnOtoKapat">KAPAT sinyali</button>
+        <button type="button" class="ikincil" id="btnOtoAc">İNDİR sinyali</button>
+        <button type="button" class="ikincil" id="btnOtoKapat">KALDIR sinyali</button>
         <button type="button" class="ikincil" id="btnOtoKopya">JSON kopyala</button>
       </div>
-      <p class="dipnot" id="otoNot">Panjur/saçak köprüsüne POST JSON. MQTT: golge-saati/sacak/open|close</p>
+      <p class="dipnot" id="otoNot">Solar Curtain köprüsüne POST JSON. MQTT: golge-saati/perde/open|close</p>
     </details>
 
     <p class="dipnot" id="dipnot">Yıllık kWh = günlük güneş farkı × klima kW × daire × sıcak gün. CO₂ = kWh × şebeke katsayısı. Güneş: astronomik model · iklim: İstanbul ay ağırlığı · bina: OSM · hava: Open-Meteo · CO₂: ~0,4 kg/kWh. Paneller: <a href="https://solarcurtain.co" target="_blank" rel="noopener noreferrer">Solar Curtain</a>. Detay: <a href="etki.html">etki.html</a></p>
@@ -353,12 +354,12 @@
   <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
   <script src="vendor/three.min.js"></script>
   <script src="vendor/OrbitControls.js"></script>
-  <script src="js/gunes.js?v=19"></script>
-  <script src="js/senaryolar.js?v=19"></script>
-  <script src="js/ekler.js?v=19"></script>
-  <script src="js/bluetooth.js?v=19"></script>
-  <script src="js/wifi.js?v=19"></script>
-  <script src="js/bina.js?v=19"></script>
-  <script src="js/uygulama.js?v=19"></script>
+  <script src="js/gunes.js?v=20"></script>
+  <script src="js/senaryolar.js?v=20"></script>
+  <script src="js/ekler.js?v=20"></script>
+  <script src="js/bluetooth.js?v=20"></script>
+  <script src="js/wifi.js?v=20"></script>
+  <script src="js/bina.js?v=20"></script>
+  <script src="js/uygulama.js?v=20"></script>
 </body>
 </html>

@@ -1,5 +1,10 @@
 (function (k) {
-  var SACAK_SECENEK = [0.4, 0.6, 0.8, 1.0];
+  var SACAK_SECENEK = [
+    { ek: 0.4, ad: "Zebra açık" },
+    { ek: 0.6, ad: "Zebra" },
+    { ek: 0.8, ad: "Blackout" },
+    { ek: 1.0, ad: "Blackout tam" }
+  ];
   var CAM_TIPLERI = [
     { id: "tek", ad: "Tek cam", shgc: 0.85 },
     { id: "cift", ad: "Çift cam", shgc: 0.65 },
@@ -41,7 +46,9 @@
   function sacakKarsilastir(G, durum, ayGun) {
     var taban = durum.sacak;
     var normal = durum.normal;
-    return SACAK_SECENEK.map(function (ek) {
+    return SACAK_SECENEK.map(function (sec) {
+      var ek = typeof sec === "number" ? sec : sec.ek;
+      var ad = typeof sec === "number" ? (Math.round(ek * 100) + " cm") : sec.ad;
       var ciplak = G.saatToplam(G.araliklar(ayGun, taban, normal));
       var ortulu = G.saatToplam(G.araliklar(ayGun, taban + ek, normal));
       var fark = Math.max(0, ciplak - ortulu);
@@ -54,6 +61,7 @@
       });
       return {
         cm: Math.round(ek * 100),
+        ad: ad,
         ek: ek,
         gunlukFark: fark,
         yilKwh: yil.yilKwh,
@@ -86,8 +94,8 @@
       kayipKwh: kayipKwh,
       kayipTl: kayipTl,
       metin: kayipKwh > 20
-        ? ("Kış uyarısı: sabit saçak ~" + Math.round(kayipKwh) + " kWh pasif ısı kaçırabilir (~" +
-          Math.round(kayipTl) + " TL). Hareketli saçak veya kışın çekme önerilir.")
+        ? ("Kış uyarısı: sürekli inik perde ~" + Math.round(kayipKwh) + " kWh pasif ısı kaçırabilir (~" +
+          Math.round(kayipTl) + " TL). Kışın Solar Curtain’i kaldırmak önerilir.")
         : "Kış güneş kaybı kabul edilebilir seviyede."
     };
   }

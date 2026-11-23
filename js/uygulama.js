@@ -535,7 +535,7 @@
     programListe.innerHTML = "";
 
     if (!ciplak.length) {
-      programDurum.textContent = "Bugün saçak açmaya gerek yok";
+      programDurum.textContent = "Bugün perde indirmeye gerek yok";
       programDurum.className = "program-durum kapali";
       if (programSonraki) programSonraki.textContent = "Doğrudan güneş camı ısıtmıyor.";
       return null;
@@ -563,7 +563,7 @@
       programDurum.className = "program-durum ac";
       if (programSonraki) {
         programSonraki.textContent = "Açık aralık: " + G.saatYazi(aktif[0]) + "–" + G.saatYazi(aktif[1]) +
-          (durum.sacakVar ? " · saçak şu an açık" : " · henüz açılmadı");
+          (durum.sacakVar ? " · perde şu an inik" : " · henüz inmedi");
       }
     } else {
       var sonraki = null;
@@ -577,7 +577,7 @@
           programSonraki.textContent = "Açık kalacak: " + G.saatYazi(sonraki[0]) + "–" + G.saatYazi(sonraki[1]);
         }
       } else {
-        programDurum.textContent = "Bugünün saçak pencereleri bitti";
+        programDurum.textContent = "Bugünün perde pencereleri bitti";
         programDurum.className = "program-durum kapali";
         if (programSonraki) {
           programSonraki.textContent = "İlk açılış sabah " + G.saatYazi(ciplak[0][0]) + " idi.";
@@ -599,7 +599,7 @@
     sonBildirimAnahtar = anahtar;
     var baslik = "Saçağı aç";
     var govde = ayAd + " · " + G.saatYazi(prog.aktif[0]) + "–" + G.saatYazi(prog.aktif[1]) +
-      " arasında saçak açık olmalı.";
+      " arasında perde inik olmalı.";
     if (typeof Notification === "undefined") return;
     if (Notification.permission === "granted") {
       try { new Notification(baslik, { body: govde, tag: "golge-sacak" }); } catch (e) {}
@@ -620,7 +620,7 @@
     liste.forEach(function (row) {
       var tr = document.createElement("tr");
       if (Math.round(durum.ek * 100) === row.cm) tr.className = "secili";
-      tr.innerHTML = "<td>" + row.cm + " cm</td><td>" +
+      tr.innerHTML = "<td>" + (row.ad || (row.cm + " cm")) + "</td><td>" +
         row.gunlukFark.toFixed(1).replace(".", ",") + " sa</td><td>" +
         Math.round(row.yilKwh).toLocaleString("tr-TR") + "</td><td>" +
         Math.round(row.yilTl).toLocaleString("tr-TR") + "</td><td></td>";
@@ -710,7 +710,7 @@
     sacakSaat.textContent = saatOrtuluGoster.toFixed(1).replace(".", ",") + " sa";
     farkSaat.textContent = fark.toFixed(1).replace(".", ",") + " sa";
     yilKwh.textContent = Math.round(yil.yilKwh).toLocaleString("tr-TR") + " kWh";
-    if (sacakEtiketSayi) sacakEtiketSayi.textContent = ekCm() + " cm saçak";
+    if (sacakEtiketSayi) sacakEtiketSayi.textContent = "Solar Curtain";
     if (yilEtiket) yilEtiket.textContent = "~" + yil.sicakGun + " sıcak gün";
     karbon.textContent =
       "Brüt " + Math.round(yil.yilCo2).toLocaleString("tr-TR") + " kg CO₂ / yıl  ·  " +
@@ -734,7 +734,7 @@
     }
     if (rakamKaynak) {
       rakamKaynak.textContent =
-        "Kaynak · Günlük fark: güneş/saçak modeli (" + durum.lat.toFixed(2) + "°N) · " +
+        "Kaynak · Günlük fark: güneş/perde modeli (" + durum.lat.toFixed(2) + "°N) · " +
         "Brüt ≈ " + fark.toFixed(1).replace(".", ",") + " sa × " +
         String(durum.guc).replace(".", ",") + " kW × " + durum.daire +
         " daire × ~" + yil.sicakGun + " sıcak gün (SHGC " +
@@ -763,7 +763,7 @@
     if (dereceMax) dereceMax.textContent = Math.round(TdisGoster + 18) + "°";
     if (dereceNot) {
       dereceNot.textContent = "Dış hava ~" + TdisGoster.toFixed(0).replace(".", ",") +
-        "°C · saçak farkı " + dFark.toFixed(1).replace(".", ",") +
+        "°C · perde farkı " + dFark.toFixed(1).replace(".", ",") +
         "° (SHGC " + (durum.shgc != null ? durum.shgc : 0.65) + ")";
     }
     if (dereceDolgu) {
@@ -782,10 +782,10 @@
     var bina = S.binaBul(durum.binaId);
     var sira = (B.BOLME || 8) + " cam sırasının tamamı";
     if (durum.sacakVar) {
-      cumle.textContent = ekCm() + " cm saçak " + sira + " üzerinde açık. Güneş aralığı: " + sonra + ". " + (bina.not || "");
+      cumle.textContent = "Solar Curtain " + sira + " üzerinde inik · gölge + elektrik. Güneş aralığı: " + sonra + ". " + (bina.not || "");
     } else {
       cumle.textContent = ay.ad + " · " + sira + " çıplak: " + G.aralikYazi(ciplak) +
-        ". +" + ekCm() + " cm saçak bunu " + sonra + " aralığına indirir.";
+        ". Solar Curtain bunu " + sonra + " aralığına indirir (solarcurtain.co).";
     }
 
     var prog = programKur(ciplak, durum.saat);
@@ -794,28 +794,28 @@
 
     sacakDugme.setAttribute("aria-pressed", durum.sacakVar ? "true" : "false");
     sacakDugme.querySelector(".sacak-etiket").textContent =
-      durum.sacakVar ? "Tüm saçakları kaldır" : ("Tüm camlara " + ekCm() + " cm saçak");
+      durum.sacakVar ? "Panelli perdeyi kaldır" : "Panelli perdeyi indir";
     if (prog && prog.simdiAcik && !durum.sacakVar) {
       sacakDugme.querySelector(".sacak-ipucu").textContent =
-        "Şimdi aç · " + G.saatYazi(prog.aktif[0]) + "–" + G.saatYazi(prog.aktif[1]);
+        "Şimdi indir · " + G.saatYazi(prog.aktif[0]) + "–" + G.saatYazi(prog.aktif[1]);
     } else if (prog && !prog.simdiAcik && prog.araliklar.length) {
       var sonrakiAc = null;
       prog.araliklar.forEach(function (a) {
         if (durum.saat < a[0] && sonrakiAc == null) sonrakiAc = a;
       });
       sacakDugme.querySelector(".sacak-ipucu").textContent = sonrakiAc
-        ? "Sonraki açılış " + G.saatYazi(sonrakiAc[0])
-        : (durum.sacakVar ? "Camlar soğudu · gölge uzadı" : "Bugün bitti");
+        ? "Sonraki indirme " + G.saatYazi(sonrakiAc[0])
+        : (durum.sacakVar ? "Cam soğudu · panel elektrik üretiyor" : "Bugün bitti");
     } else {
       sacakDugme.querySelector(".sacak-ipucu").textContent =
-        durum.sacakVar ? "Camlar soğudu · gölge uzadı" : "Klima saatini geciktir";
+        durum.sacakVar ? "Cam soğudu · panel elektrik üretiyor" : "Gölgele · üret · klimayı geciktir";
     }
     if (durumYazi) {
       if (prog && prog.simdiAcik && !durum.sacakVar) {
         durumYazi.textContent = "Saçağı aç · " + G.saatYazi(prog.aktif[0]) + "–" + G.saatYazi(prog.aktif[1]);
         durumYazi.classList.add("aktif");
       } else {
-        durumYazi.textContent = durum.sacakVar ? (ekCm() + " cm saçak aktif") : "Çıplak cam";
+        durumYazi.textContent = durum.sacakVar ? "Solar Curtain inik" : "Çıplak cam";
         durumYazi.classList.toggle("aktif", durum.sacakVar);
       }
     }
@@ -829,7 +829,7 @@
       b.classList.toggle("sicak", G.sicakMi(g, sacakMetre(), durum.normal));
       b.classList.toggle("ac", acGerek);
       b.classList.toggle("simdi", Math.round(an * 4) === Math.round(durum.saat * 4));
-      b.title = G.saatYazi(an) + (acGerek ? " · saçak açık olmalı" : "");
+      b.title = G.saatYazi(an) + (acGerek ? " · perde inik olmalı" : "");
     });
 
     Array.prototype.forEach.call(aylar.children, function (b, i) {
@@ -918,13 +918,13 @@
       { t: 7000, metin: "Güneş camı ısıtıyor · çıplak cephe", fn: function () {
         durum.saat = 15; durum.sacakVar = false; ciz();
       }},
-      { t: 14000, metin: "60 cm saçak · gölge uzar, cam soğur", fn: function () {
+      { t: 14000, metin: "Solar Curtain iner · gölge + elektrik", fn: function () {
         durum.sacakVar = true; ciz();
       }},
       { t: 22000, metin: "Pusula: camın baktığı yön hesabı belirler", fn: function () {
         normalAyarla(225, "Demo: güneybatı cephe");
       }},
-      { t: 30000, metin: "Saçak programı: ne zaman aç, ne zaman kapat", fn: function () {
+      { t: 30000, metin: "Perde programı: ne zaman indir, ne zaman kaldır", fn: function () {
         durum.sacakVar = false; durum.saat = 11; ciz();
       }},
       { t: 38000, metin: "Net etki: ayak izi ve sıçrama düşülmüş kWh / CO₂", fn: function () {
@@ -932,7 +932,7 @@
         var nk = document.getElementById("netKutu");
         if (nk) nk.scrollIntoView({ block: "nearest", behavior: "smooth" });
       }},
-      { t: 48000, metin: "40–100 cm saçak seçeneklerini karşılaştır", fn: function () {
+      { t: 48000, metin: "Zebra / Blackout modellerini karşılaştır", fn: function () {
         var kutu = document.getElementById("sacakKarsilastir");
         if (kutu) kutu.scrollIntoView({ block: "nearest", behavior: "smooth" });
       }},
@@ -974,7 +974,7 @@
   function bleDurumYaz(d) {
     if (!bleDurumEl) return;
     if (d.bagli) {
-      bleDurumEl.textContent = "Bağlı · " + (d.ad || "saçak") + (d.kaynak ? " (" + d.kaynak + ")" : "");
+      bleDurumEl.textContent = "Bağlı · " + (d.ad || "Solar Curtain") + (d.kaynak ? " (" + d.kaynak + ")" : "");
       bleDurumEl.classList.add("bagli");
     } else {
       bleDurumEl.textContent = "Bağlı değil";
@@ -999,7 +999,7 @@
     if (!BLE || !BLE.durum.bagli) return Promise.resolve(null);
     return BLE.komutGonder(action).then(function (r) {
       if (bleNot && !sessiz) {
-        bleNot.textContent = (action === "open" ? "Saçak AÇILDI" : "Saçak KAPANDI") +
+        bleNot.textContent = (action === "open" ? "Perde İNDİRİLDİ" : "Perde KALDIRILDI") +
           " · " + (r.kaynak || "");
       }
       return r;
@@ -1014,7 +1014,7 @@
     return WIFI.komutGonder(action).then(function (r) {
       wifiDurumYaz(WIFI.durum);
       if (wifiNot && !sessiz) {
-        wifiNot.textContent = (action === "open" ? "Wi‑Fi saçak AÇILDI" : action === "close" ? "Wi‑Fi saçak KAPANDI" : "Durum alındı") +
+        wifiNot.textContent = (action === "open" ? "Wi‑Fi perde İNDİRİLDİ" : action === "close" ? "Wi‑Fi perde KALDIRILDI" : "Durum alındı") +
           " · " + WIFI.durum.url;
       }
       return r;
@@ -1278,18 +1278,18 @@
     ciz();
     var ciplak = G.araliklar(ay.gun, durum.sacak, durum.normal);
     if (!ciplak.length) {
-      if (paylasNot) paylasNot.textContent = "Bu ay için saçak aralığı yok.";
+      if (paylasNot) paylasNot.textContent = "Bu ay için perde aralığı yok.";
       return;
     }
     var ics = E.icalUret({
-      baslik: "Saçak · " + (durum.yerAd || S.binaBul(durum.binaId).ad),
+      baslik: "Solar Curtain · " + (durum.yerAd || S.binaBul(durum.binaId).ad),
       araliklar: ciplak,
       gunSay: 14,
       lat: durum.lat,
       lon: durum.lon
     });
     S.indir("golge-saati-sacak.ics", ics, "text/calendar;charset=utf-8");
-    if (paylasNot) paylasNot.textContent = "14 günlük saçak takvimi indirildi.";
+    if (paylasNot) paylasNot.textContent = "14 günlük perde takvimi indirildi.";
   });
 
   document.getElementById("btnHava").addEventListener("click", function () {
@@ -1412,7 +1412,7 @@
       bleDurumYaz(d);
       if (bleNot) {
         bleNot.textContent = d.kaynak === "sanal"
-          ? "Sanal saçak bağlandı · demo komutları çalışır"
+          ? "Sanal Solar Curtain bağlandı · demo komutları çalışır"
           : "Bağlandı · OPEN/CLOSE komutları hazır";
       }
     }).catch(function (e) {

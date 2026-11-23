@@ -16,7 +16,7 @@
       guc: 1.2,
       engel: 8,
       bulut: 0.12,
-      not: "OSM 3B · tüm cephe camlarında hareketli saçak (8 sıra)"
+      not: "OSM 3B · tüm cephe camlarında Solar Curtain panelli perde (8 sıra)"
     },
     {
       id: "maslak",
@@ -167,7 +167,7 @@
       csvSatir(["Yer", rapor.yer]),
       csvSatir(["Enlem", rapor.lat]),
       csvSatir(["Cephe azimut °", rapor.normal]),
-      csvSatir(["Saçak cm", rapor.ekCm]),
+      csvSatir(["Perde gölge eşdeğeri cm", rapor.ekCm]),
       csvSatir(["Günlük fark sa", rapor.gunlukFark]),
       csvSatir(["Brüt yıllık kWh", Math.round(rapor.yilKwh)]),
       csvSatir(["Brüt yıllık CO2 kg", Math.round(rapor.yilCo2)]),
@@ -180,7 +180,7 @@
       csvSatir(["Net yıllık TL", Math.round(rapor.netTl != null ? rapor.netTl : rapor.yilTl * 0.95)]),
       csvSatir(["Geri ödeme yıl", rapor.geriOdeme]),
       csvSatir([]),
-      csvSatir(["Ay", "Çıplak sa", "Saçaklı sa", "Fark sa", "Efektif gün", "kWh"])
+      csvSatir(["Ay", "Çıplak sa", "Perde inik sa", "Fark sa", "Efektif gün", "kWh"])
     ];
     (rapor.aylik || []).forEach(function (a) {
       satirlar.push(csvSatir([
@@ -240,13 +240,13 @@
       ") = <strong>net " + Math.round(rapor.netKwh != null ? rapor.netKwh : rapor.yilKwh).toLocaleString("tr-TR") +
       " kWh / " + Math.round(rapor.netCo2 != null ? rapor.netCo2 : rapor.yilCo2).toLocaleString("tr-TR") +
       " kg CO₂</strong>. Yerel web (kalıcı sunucu yok); sıçrama = konfor/setpoint varsayımı.</p>" +
-      "<h2>Parametreler</h2><p>Saçak +" + rapor.ekCm + " cm · pencere " + rapor.pencere +
+      "<h2>Parametreler</h2><p>Solar Curtain eşdeğer +" + rapor.ekCm + " cm · pencere " + rapor.pencere +
       " m · cephe " + rapor.normal + "° · enlem " + rapor.lat +
       " · engel " + rapor.engel + "° · bulut %" + Math.round(rapor.bulut * 100) +
       " · " + rapor.daire + " daire × " + rapor.guc + " kW · " + rapor.fiyat + " TL/kWh" +
       (rapor.maliyet > 0 ? " · yatırım " + rapor.maliyet.toLocaleString("tr-TR") + " TL" : "") +
       "</p>" +
-      "<h2>Aylık etki</h2><table><thead><tr><th>Ay</th><th>Çıplak</th><th>Saçak</th><th>Fark</th><th>kWh</th></tr></thead><tbody>" +
+      "<h2>Aylık etki</h2><table><thead><tr><th>Ay</th><th>Çıplak</th><th>Perde</th><th>Fark</th><th>kWh</th></tr></thead><tbody>" +
       aylikSatir + "</tbody></table>" +
       "<p style='margin-top:28px;color:#888;font-size:12px'>Örnek model · net etki düşülmüş · OpenStreetMap · Gölge Saati</p>" +
       "</body></html>"
