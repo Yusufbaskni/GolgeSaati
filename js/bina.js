@@ -760,9 +760,6 @@
     var frameYan = new THREE.MeshStandardMaterial({
       color: 0x14181c, metalness: 0.75, roughness: 0.3, envMap: envMap, envMapIntensity: 0.45
     });
-    var metalYan = new THREE.MeshStandardMaterial({
-      color: 0x1c2228, metalness: 0.7, roughness: 0.35, envMap: envMap, envMapIntensity: 0.4
-    });
 
     // Diğer tüm cepheler: işlevsel cam + ısı glow + saçak
     KENAR.forEach(function (k2, idx) {
