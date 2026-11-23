@@ -45,6 +45,7 @@
   var farkSaat = document.getElementById("farkSaat");
   var yilKwh = document.getElementById("yilKwh");
   var rakamKaynak = document.getElementById("rakamKaynak");
+  var netEtkiEl = document.getElementById("netEtki");
   var karbon = document.getElementById("karbon");
   var maliyetYazi = document.getElementById("maliyetYazi");
   var konumYazi = document.getElementById("konumYazi");
@@ -268,6 +269,14 @@
       yilKwh: yil.yilKwh,
       yilCo2: yil.yilCo2,
       yilTl: yil.yilTl,
+      brutKwh: yil.brutKwh,
+      aracKwh: yil.aracKwh,
+      motorKwh: yil.motorKwh,
+      sicramaOran: yil.sicramaOran,
+      sicramaKwh: yil.sicramaKwh,
+      netKwh: yil.netKwh,
+      netCo2: yil.netCo2,
+      netTl: yil.netTl,
       geriOdeme: geri,
       aylik: yil.aylik
     };
@@ -693,8 +702,16 @@
     if (sacakEtiketSayi) sacakEtiketSayi.textContent = ekCm() + " cm saçak";
     if (yilEtiket) yilEtiket.textContent = "~" + yil.sicakGun + " sıcak gün";
     karbon.textContent =
-      Math.round(yil.yilCo2).toLocaleString("tr-TR") + " kg CO₂ / yıl  ·  " +
+      "Brüt " + Math.round(yil.yilCo2).toLocaleString("tr-TR") + " kg CO₂ / yıl  ·  " +
       Math.round(yil.yilTl).toLocaleString("tr-TR") + " TL / yıl";
+    if (netEtkiEl) {
+      netEtkiEl.textContent =
+        "Net " + Math.round(yil.netKwh).toLocaleString("tr-TR") + " kWh / yıl  ·  " +
+        Math.round(yil.netCo2).toLocaleString("tr-TR") + " kg CO₂  ·  " +
+        Math.round(yil.netTl).toLocaleString("tr-TR") + " TL  " +
+        "(ayak izi −" + Math.round(yil.aracKwh + yil.motorKwh) +
+        " · sıçrama −" + Math.round(yil.sicramaKwh) + " kWh)";
+    }
     if (maliyetYazi) {
       maliyetYazi.textContent = durum.maliyet > 0
         ? "Yatırım " + durum.maliyet.toLocaleString("tr-TR") + " TL → geri ödeme ~" + rapor.geriOdeme
@@ -703,12 +720,14 @@
     if (rakamKaynak) {
       rakamKaynak.textContent =
         "Kaynak · Günlük fark: güneş/saçak modeli (" + durum.lat.toFixed(2) + "°N) · " +
-        "Yıllık ≈ " + fark.toFixed(1).replace(".", ",") + " sa × " +
+        "Brüt ≈ " + fark.toFixed(1).replace(".", ",") + " sa × " +
         String(durum.guc).replace(".", ",") + " kW × " + durum.daire +
         " daire × ~" + yil.sicakGun + " sıcak gün (SHGC " +
         (durum.shgc != null ? String(durum.shgc).replace(".", ",") : "0,65") + ") · " +
-        "CO₂: " + String(durum.katsayi).replace(".", ",") +
-        " kg/kWh (TR şebeke yaklaşık) · OSM + Open-Meteo · etki.html";
+        "Net = brüt − " + yil.aracKwh + "−" + yil.motorKwh +
+        " (araç/IoT) − %" + Math.round(yil.sicramaOran * 100) +
+        " sıçrama · CO₂: " + String(durum.katsayi).replace(".", ",") +
+        " kg/kWh · OSM + Open-Meteo · etki.html";
     }
 
     var dCiplak = camDerece(gunes, durum.sacak);

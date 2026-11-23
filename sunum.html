@@ -59,28 +59,25 @@
   <section class="slayt" data-mod="etki">
     <p class="no reveal">6 / 8 · Etki</p>
     <h1 class="reveal reveal-d1">Saat kısalır. kWh düşer.</h1>
-    <p class="lead reveal reveal-d2">Ağustos örneği · 1,2 kW × 5 daire × 50 sıcak gün</p>
+    <p class="lead reveal reveal-d2">Ağustos örneği · 1,2 kW × 5 daire × 50 sıcak gün · net hesap</p>
     <div class="rakamlar reveal reveal-d3">
       <div class="rakam"><strong data-count="3.3" data-suffix=" sa">0</strong><span>Günlük fark</span></div>
-      <div class="rakam"><strong data-count="1000" data-suffix=" kWh">0</strong><span>50 sıcak gün</span></div>
-      <div class="rakam"><strong data-count="400" data-suffix=" kg">0</strong><span>CO₂ / yıl</span></div>
+      <div class="rakam"><strong data-count="943" data-suffix=" kWh">0</strong><span>Net / yıl</span></div>
+      <div class="rakam"><strong data-count="377" data-suffix=" kg">0</strong><span>Net CO₂</span></div>
     </div>
     <p class="kaynak reveal reveal-d4">
-      Kaynak · 3,3 sa = güneş/saçak modeli (İstanbul enlemi, batı cephe) ·
-      1&nbsp;000 kWh ≈ 3,3 × 1,2&nbsp;kW × 5 daire × 50 sıcak gün ·
-      400&nbsp;kg = 1&nbsp;000 × 0,4&nbsp;kg&nbsp;CO₂/kWh (TR şebeke yaklaşık) ·
-      Sıcak gün: İstanbul yaz iklim ağırlığı · Bina: OpenStreetMap · Hava: Open-Meteo
+      Brüt ~1&nbsp;000 kWh (3,3 × 1,2 × 5 × 50) → ayak izi −7 kWh (web+API+IoT) → sıçrama −50 kWh (%5) →
+      <strong>net ~943 kWh / ~377 kg CO₂</strong> (×0,4 kg/kWh) · OSM · Open-Meteo · etki.html
     </p>
   </section>
 
   <section class="slayt" data-mod="acilis">
     <p class="no reveal">7 / 8 · Dürüstlük</p>
     <h1 class="reveal reveal-d1">Örnek cephe. Şişirilmedi.</h1>
-    <p class="lead reveal reveal-d2">Kadıköy’de ölçülmüş bir bina değildir. Şebeke ~0,4 kg CO₂/kWh. Formül ve kaynaklar ekranda; net etki pozitif kalır.</p>
+    <p class="lead reveal reveal-d2">Kadıköy’de ölçülmüş bir bina değildir. Brütü şişirmedik; neti ayak izi ve sıçramayla düşürdük. Hâlâ pozitif.</p>
     <p class="kaynak reveal reveal-d3">
-      Güneş: astronomik yükseklik/azimut · İklim: ay bazlı sıcak gün katsayısı ·
-      Klima gücü ve daire sayısı: senaryo varsayımı · SHGC: tipik cam ·
-      Detay: etki.html ve uygulama parametreleri
+      Güneş: astronomik model · İklim: ay sıcak gün katsayısı · Klima/daire: senaryo varsayımı ·
+      CO₂: ~0,4 kg/kWh · Araç: yerel (sunucu yok) · Sıçrama: %5 · Detay: etki.html
     </p>
   </section>
 

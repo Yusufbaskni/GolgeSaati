@@ -158,6 +158,17 @@
     // aylik already weighted by efektifGun inside kwh; recompute consistent:
     yilKwh = aylik.reduce(function (s, a) { return s + a.kwh; }, 0);
 
+    var brutKwh = yilKwh;
+    // Araç ayak izi: yerel istemci + seyrek API (~5 kWh/yıl) + opsiyonel IoT motor (~2)
+    var aracKwh = opts.aracKwh != null ? opts.aracKwh : 5;
+    var motorKwh = opts.motorKwh != null ? opts.motorKwh : 2;
+    // Sıçrama: kazanımın bir kısmı konfor/setpoint ile geri alınır (varsayılan %5)
+    var sicramaOran = opts.sicramaOran != null ? opts.sicramaOran : 0.05;
+    var sicramaKwh = brutKwh * sicramaOran;
+    var netKwh = Math.max(0, brutKwh - aracKwh - motorKwh - sicramaKwh);
+    var netCo2 = netKwh * katsayi;
+    var netTl = netKwh * fiyat;
+
     return {
       aylik: aylik,
       sicakGun: Math.round(sicakGun),
@@ -165,6 +176,14 @@
       yilKwh: yilKwh,
       yilCo2: yilKwh * katsayi,
       yilTl: yilKwh * fiyat,
+      brutKwh: brutKwh,
+      aracKwh: aracKwh,
+      motorKwh: motorKwh,
+      sicramaOran: sicramaOran,
+      sicramaKwh: sicramaKwh,
+      netKwh: netKwh,
+      netCo2: netCo2,
+      netTl: netTl,
       geriOdemeYil: null
     };
   }

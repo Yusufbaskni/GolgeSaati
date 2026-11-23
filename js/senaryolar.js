@@ -169,9 +169,15 @@
       csvSatir(["Cephe azimut °", rapor.normal]),
       csvSatir(["Saçak cm", rapor.ekCm]),
       csvSatir(["Günlük fark sa", rapor.gunlukFark]),
-      csvSatir(["Yıllık kWh", Math.round(rapor.yilKwh)]),
-      csvSatir(["Yıllık CO2 kg", Math.round(rapor.yilCo2)]),
-      csvSatir(["Yıllık TL", Math.round(rapor.yilTl)]),
+      csvSatir(["Brüt yıllık kWh", Math.round(rapor.yilKwh)]),
+      csvSatir(["Brüt yıllık CO2 kg", Math.round(rapor.yilCo2)]),
+      csvSatir(["Brüt yıllık TL", Math.round(rapor.yilTl)]),
+      csvSatir(["Araç ayak izi kWh", rapor.aracKwh != null ? rapor.aracKwh : 5]),
+      csvSatir(["IoT motor kWh", rapor.motorKwh != null ? rapor.motorKwh : 2]),
+      csvSatir(["Sıçrama kWh", Math.round(rapor.sicramaKwh != null ? rapor.sicramaKwh : rapor.yilKwh * 0.05)]),
+      csvSatir(["Net yıllık kWh", Math.round(rapor.netKwh != null ? rapor.netKwh : rapor.yilKwh * 0.95)]),
+      csvSatir(["Net yıllık CO2 kg", Math.round(rapor.netCo2 != null ? rapor.netCo2 : rapor.yilCo2 * 0.95)]),
+      csvSatir(["Net yıllık TL", Math.round(rapor.netTl != null ? rapor.netTl : rapor.yilTl * 0.95)]),
       csvSatir(["Geri ödeme yıl", rapor.geriOdeme]),
       csvSatir([]),
       csvSatir(["Ay", "Çıplak sa", "Saçaklı sa", "Fark sa", "Efektif gün", "kWh"])
@@ -221,11 +227,19 @@
       "<button onclick='print()'>Yazdır / PDF kaydet</button>" +
       "<h1>Gölge Saati</h1><p>" + rapor.bina + " · " + rapor.yer + "</p>" +
       "<div class=grid>" +
-      "<div class=kutu><div>Yıllık tasarruf</div><div class=buyuk>" + Math.round(rapor.yilKwh).toLocaleString("tr-TR") + " kWh</div></div>" +
-      "<div class=kutu><div>Yıllık maliyet</div><div class=buyuk>" + Math.round(rapor.yilTl).toLocaleString("tr-TR") + " TL</div></div>" +
-      "<div class=kutu><div>CO₂</div><div class=buyuk>" + Math.round(rapor.yilCo2).toLocaleString("tr-TR") + " kg</div></div>" +
+      "<div class=kutu><div>Brüt tasarruf</div><div class=buyuk>" + Math.round(rapor.yilKwh).toLocaleString("tr-TR") + " kWh</div></div>" +
+      "<div class=kutu><div>Net tasarruf</div><div class=buyuk>" + Math.round(rapor.netKwh != null ? rapor.netKwh : rapor.yilKwh).toLocaleString("tr-TR") + " kWh</div></div>" +
+      "<div class=kutu><div>Net CO₂</div><div class=buyuk>" + Math.round(rapor.netCo2 != null ? rapor.netCo2 : rapor.yilCo2).toLocaleString("tr-TR") + " kg</div></div>" +
       "<div class=kutu><div>Geri ödeme</div><div class=buyuk>" + rapor.geriOdeme + "</div></div>" +
       "</div>" +
+      "<h2>Net etki</h2><p>Brüt " + Math.round(rapor.yilKwh).toLocaleString("tr-TR") +
+      " kWh − araç " + (rapor.aracKwh != null ? rapor.aracKwh : 5) +
+      " − IoT " + (rapor.motorKwh != null ? rapor.motorKwh : 2) +
+      " − sıçrama " + Math.round(rapor.sicramaKwh != null ? rapor.sicramaKwh : rapor.yilKwh * 0.05) +
+      " (%" + Math.round((rapor.sicramaOran != null ? rapor.sicramaOran : 0.05) * 100) +
+      ") = <strong>net " + Math.round(rapor.netKwh != null ? rapor.netKwh : rapor.yilKwh).toLocaleString("tr-TR") +
+      " kWh / " + Math.round(rapor.netCo2 != null ? rapor.netCo2 : rapor.yilCo2).toLocaleString("tr-TR") +
+      " kg CO₂</strong>. Yerel web (kalıcı sunucu yok); sıçrama = konfor/setpoint varsayımı.</p>" +
       "<h2>Parametreler</h2><p>Saçak +" + rapor.ekCm + " cm · pencere " + rapor.pencere +
       " m · cephe " + rapor.normal + "° · enlem " + rapor.lat +
       " · engel " + rapor.engel + "° · bulut %" + Math.round(rapor.bulut * 100) +
@@ -234,7 +248,7 @@
       "</p>" +
       "<h2>Aylık etki</h2><table><thead><tr><th>Ay</th><th>Çıplak</th><th>Saçak</th><th>Fark</th><th>kWh</th></tr></thead><tbody>" +
       aylikSatir + "</tbody></table>" +
-      "<p style='margin-top:28px;color:#888;font-size:12px'>Örnek model · OpenStreetMap bağlamı · Gölge Saati</p>" +
+      "<p style='margin-top:28px;color:#888;font-size:12px'>Örnek model · net etki düşülmüş · OpenStreetMap · Gölge Saati</p>" +
       "</body></html>"
     );
     w.document.close();
