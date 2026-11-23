@@ -235,6 +235,24 @@ body.mod-etki .marka-kose { color: var(--sicak); }
 .slayt-foto h1 {
   text-shadow: 0 16px 48px rgba(0, 0, 0, 0.55);
 }
+.foto-kredi {
+  margin: 22px 0 0;
+  max-width: 36ch;
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  line-height: 1.45;
+  color: rgba(246, 241, 232, 0.55);
+}
+.foto-kredi a {
+  color: var(--gunes);
+  text-decoration: none;
+  border-bottom: 1px solid rgba(239, 188, 94, 0.45);
+}
+.foto-kredi a:hover {
+  color: #ffe4a8;
+  border-bottom-color: #ffe4a8;
+}
 
 .no {
   margin: 0 0 20px;
