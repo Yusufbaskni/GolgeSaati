@@ -50,6 +50,8 @@
   var sunLight, sunMesh, sunGlow, hemi, rimLight, fillLight;
   var camGroup = [];
   var sacakMeshler = [];
+  var solarPerdeTex = null;
+  var solarPerdeMat = null;
   var heatLights = [];
   var sunRays = [];
   var hedefIsaret;
@@ -122,7 +124,8 @@
   }
 
   function solarPerdeDokusu() {
-    return canvasTex(function (ctx, w, h) {
+    if (solarPerdeTex) return solarPerdeTex;
+    solarPerdeTex = canvasTex(function (ctx, w, h) {
       var i, y, band;
       ctx.fillStyle = "#1a1c20";
       ctx.fillRect(0, 0, w, h);
@@ -132,15 +135,30 @@
         // Güneş paneli şeritleri (Solar Curtain zebra)
         ctx.fillStyle = i % 2 === 0 ? "#0c1014" : "#2a3238";
         ctx.fillRect(0, y, w, band * 0.72);
-        ctx.fillStyle = "rgba(80, 120, 90, 0.18)";
+        ctx.fillStyle = "rgba(80, 120, 90, 0.22)";
         ctx.fillRect(0, y + 1, w, band * 0.2);
-        ctx.fillStyle = "rgba(255, 220, 140, 0.06)";
+        ctx.fillStyle = "rgba(255, 220, 140, 0.08)";
         ctx.fillRect(w * 0.08, y + band * 0.15, w * 0.2, band * 0.25);
       }
-      ctx.strokeStyle = "rgba(200, 180, 120, 0.25)";
+      ctx.strokeStyle = "rgba(200, 180, 120, 0.35)";
       ctx.lineWidth = 4;
       ctx.strokeRect(6, 6, w - 12, h - 12);
-    }, 512, 1024, 1, 1);
+    }, 256, 512, 1, 1);
+    return solarPerdeTex;
+  }
+
+  function solarPerdeMateryal() {
+    // Her mesh kendi materyalini alsın (emissive animasyonu için), texture tek
+    return new THREE.MeshStandardMaterial({
+      map: solarPerdeDokusu(),
+      color: 0xffffff,
+      metalness: 0.4,
+      roughness: 0.4,
+      envMap: envMap,
+      envMapIntensity: 0.55,
+      emissive: 0x243528,
+      emissiveIntensity: 0.2
+    });
   }
 
   function camCepheDokusu() {
@@ -655,17 +673,6 @@
         facade.add(cam);
         camGroup.push(cam);
 
-        // İç perde / gölgelik silueti
-        var perde = new THREE.Mesh(
-          new THREE.BoxGeometry(gen * 0.5, camH * 0.55, 0.04),
-          new THREE.MeshStandardMaterial({
-            color: 0xc8b8a0, roughness: 0.85, metalness: 0.05,
-            transparent: true, opacity: 0.35
-          })
-        );
-        perde.position.set(localX - gen * 0.12, yh - 0.2, 0.35);
-        facade.add(perde);
-
         if (sicakVurgu) {
           var heat = new THREE.PointLight(0xff5520, 0, 28, 2);
           heat.position.set(localX, yh, 2.8);
@@ -677,38 +684,29 @@
           bolme: bolme, cepheDis: kenar.dis, yuz: YUZ
         });
 
-        // Solar Curtain — cam önünde inen panelli perde
+        // Solar Curtain — cam önünde inen panelli perde (üstten scale.y)
         if (hareketliSacak) {
-          var perdeH = camH * 0.96;
-          var perdeGen = gen * 0.92;
-          var perdeTex = solarPerdeDokusu();
-          var perde = new THREE.Mesh(
-            new THREE.BoxGeometry(perdeGen, perdeH, 0.05),
-            new THREE.MeshStandardMaterial({
-              map: perdeTex,
-              color: 0xffffff,
-              metalness: 0.35,
-              roughness: 0.45,
-              envMap: envMap,
-              envMapIntensity: 0.4,
-              emissive: 0x1a2818,
-              emissiveIntensity: 0.12
-            })
+          var perdeH = camH * 0.98;
+          var perdeGen = gen * 0.94;
+          var solarPerde = new THREE.Mesh(
+            new THREE.BoxGeometry(perdeGen, perdeH, 0.06),
+            solarPerdeMateryal()
           );
-          perde.geometry.translate(0, -perdeH / 2, 0);
-          perde.position.set(localX, z1 - 0.05, 0.62);
-          perde.userData = { bolme: bolme, hareketli: true, perde: true, yuz: YUZ };
-          perde.scale.y = 0.04;
-          perde.castShadow = true;
-          facade.add(perde);
-          sacakMeshler.push(perde);
+          solarPerde.geometry.translate(0, -perdeH / 2, 0);
+          solarPerde.position.set(localX, z1 - 0.02, 0.68);
+          solarPerde.userData = { bolme: bolme, hareketli: true, perde: true, yuz: YUZ };
+          solarPerde.scale.y = 0.08;
+          solarPerde.castShadow = true;
+          solarPerde.renderOrder = 2;
+          facade.add(solarPerde);
+          sacakMeshler.push(solarPerde);
 
-          // Üst kasa / ray
+          // Üst kasa / ray — toplanmış perde her zaman görünür
           var ray = new THREE.Mesh(
-            new THREE.BoxGeometry(perdeGen * 1.02, 0.14, 0.12),
+            new THREE.BoxGeometry(perdeGen * 1.04, 0.18, 0.14),
             metalAltin
           );
-          ray.position.set(localX, z1 + 0.02, 0.62);
+          ray.position.set(localX, z1 + 0.06, 0.68);
           facade.add(ray);
         }
       }
@@ -798,25 +796,17 @@
             bolme: b, cepheDis: k2.dis, yuz: idx
           });
 
-          var perdeH2 = camH2 * 0.9;
+          var perdeH2 = camH2 * 0.92;
           var perde2 = new THREE.Mesh(
-            new THREE.BoxGeometry(gen2 * 0.9, perdeH2, 0.045),
-            new THREE.MeshStandardMaterial({
-              map: solarPerdeDokusu(),
-              color: 0xffffff,
-              metalness: 0.35,
-              roughness: 0.45,
-              envMap: envMap,
-              envMapIntensity: 0.35,
-              emissive: 0x1a2818,
-              emissiveIntensity: 0.1
-            })
+            new THREE.BoxGeometry(gen2 * 0.92, perdeH2, 0.055),
+            solarPerdeMateryal()
           );
           perde2.geometry.translate(0, -perdeH2 / 2, 0);
-          perde2.position.set(lx, z0 + camH2 - 0.08, 0.4);
+          perde2.position.set(lx, z0 + camH2 - 0.05, 0.48);
           perde2.userData = { bolme: b, hareketli: true, perde: true, yuz: idx };
-          perde2.scale.y = 0.04;
+          perde2.scale.y = 0.08;
           perde2.castShadow = true;
+          perde2.renderOrder = 2;
           yan.add(perde2);
           sacakMeshler.push(perde2);
         }
@@ -1389,12 +1379,13 @@
     sacakMeshler.forEach(function (s) {
       if (!s.userData.hareketli) return;
       if (s.userData.perde) {
-        // Solar Curtain: yukarıda toplanmış → aşağı inik
-        var hedefY = Math.max(0.04, 0.04 + durum.sacakAnlik * 0.96);
-        s.scale.y += (hedefY - s.scale.y) * 0.12;
+        // Solar Curtain: yukarıda toplanmış → aşağı inik (hemen görünsün)
+        var hedefY = Math.max(0.08, 0.08 + durum.sacakAnlik * 0.92);
+        s.scale.y += (hedefY - s.scale.y) * Math.min(1, 0.22);
         if (s.material && s.material.emissiveIntensity != null) {
-          s.material.emissiveIntensity = 0.08 + durum.sacakAnlik * 0.35;
+          s.material.emissiveIntensity = 0.15 + durum.sacakAnlik * 0.45;
         }
+        s.visible = true;
         return;
       }
       var hedef = Math.max(0.06, durum.sacakTaban + durum.sacakAnlik * Math.max(0.2, durum.sacakEk) * 1.7);
