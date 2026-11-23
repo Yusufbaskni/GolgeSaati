@@ -235,14 +235,14 @@
       "<div class=kutu><div>Net CO₂</div><div class=buyuk>" + Math.round(rapor.netCo2 != null ? rapor.netCo2 : rapor.yilCo2).toLocaleString("tr-TR") + " kg</div></div>" +
       "<div class=kutu><div>Geri ödeme</div><div class=buyuk>" + rapor.geriOdeme + "</div></div>" +
       "</div>" +
-      "<h2>Net etki</h2><p>Brüt " + Math.round(rapor.yilKwh).toLocaleString("tr-TR") +
+      "<h2>Net etki</h2><p>Klima brüt " + Math.round(rapor.yilKwh).toLocaleString("tr-TR") +
       " kWh − araç " + (rapor.aracKwh != null ? rapor.aracKwh : 5) +
       " − IoT " + (rapor.motorKwh != null ? rapor.motorKwh : 2) +
       " − sıçrama " + Math.round(rapor.sicramaKwh != null ? rapor.sicramaKwh : rapor.yilKwh * 0.05) +
-      " (%" + Math.round((rapor.sicramaOran != null ? rapor.sicramaOran : 0.05) * 100) +
-      ") = <strong>net " + Math.round(rapor.netKwh != null ? rapor.netKwh : rapor.yilKwh).toLocaleString("tr-TR") +
+      " + <strong>Solar Curtain üretim " + Math.round(rapor.uretimYilKwh || 0).toLocaleString("tr-TR") +
+      " kWh</strong> = <strong>net " + Math.round(rapor.netKwh != null ? rapor.netKwh : rapor.yilKwh).toLocaleString("tr-TR") +
       " kWh / " + Math.round(rapor.netCo2 != null ? rapor.netCo2 : rapor.yilCo2).toLocaleString("tr-TR") +
-      " kg CO₂</strong>. Yerel web (kalıcı sunucu yok); sıçrama = konfor/setpoint varsayımı.</p>" +
+      " kg CO₂</strong>. Üretim: solarcurtain.co 120 W/m² · ~0,8 kWh/gün @ 4 m².</p>" +
       "<h2>Parametreler</h2><p>Solar Curtain eşdeğer +" + rapor.ekCm + " cm · pencere " + rapor.pencere +
       " m · cephe " + rapor.normal + "° · enlem " + rapor.lat +
       " · engel " + rapor.engel + "° · bulut %" + Math.round(rapor.bulut * 100) +
