@@ -400,8 +400,9 @@
   }
 
   function camRengi(sicak, pay) {
-    if (sicak) return { color: 0xff5530, emissive: 0xff2a0c, ei: 1.2 };
-    if (pay > 0.15) return { color: 0xf0b85a, emissive: 0xa86a12, ei: 0.48 };
+    if (sicak || pay > 0.55) return { color: 0xff5530, emissive: 0xff2a0c, ei: 1.35 };
+    if (pay > 0.28) return { color: 0xff8a3a, emissive: 0xd44a12, ei: 0.85 };
+    if (pay > 0.08) return { color: 0xf0b85a, emissive: 0xa86a12, ei: 0.5 };
     return { color: 0x7ab4c8, emissive: 0x0c2434, ei: 0.14 };
   }
 
@@ -414,7 +415,7 @@
     var bestDiff = 1e9;
     var i;
     for (i = 0; i < KENAR.length; i++) {
-      if (KENAR[i].boy < 20) continue;
+      if (KENAR[i].boy < 12) continue;
       var d = aciFark(KENAR[i].dis, normal);
       if (d < bestDiff) {
         bestDiff = d;
@@ -424,12 +425,53 @@
     return best;
   }
 
+  // Her cam kendi cephe azimutunu kullanır (pusula paneli ayrı; 3B gerçek yön)
   function camNormal(cam) {
-    // Pusula (durum.normal) seçili cepheyi temsil eder; diğer cepheler
-    // geometrik fark kadar kaydırılır → tüm camlar pusulaya uyumlu.
-    var baz = KENAR[durum.aktifYuz] ? KENAR[durum.aktifYuz].dis : KENAR[YUZ].dis;
-    var kendi = cam.userData.cepheDis != null ? cam.userData.cepheDis : baz;
-    return (durum.normal + (kendi - baz) + 360) % 360;
+    if (cam.userData.cepheDis != null && isFinite(cam.userData.cepheDis)) {
+      return cam.userData.cepheDis;
+    }
+    return durum.normal;
+  }
+
+  function camMateryal() {
+    return new THREE.MeshPhysicalMaterial({
+      color: 0x7ab4c8,
+      metalness: 0.15,
+      roughness: 0.06,
+      envMap: envMap,
+      envMapIntensity: 1.2,
+      clearcoat: 1,
+      clearcoatRoughness: 0.06,
+      reflectivity: 0.85,
+      transparent: true,
+      opacity: 0.92,
+      emissive: 0x0c2434,
+      emissiveIntensity: 0.12
+    });
+  }
+
+  function isiGlowEkle(parent, localX, yh, gen, camH, meta) {
+    var glow = new THREE.Mesh(
+      new THREE.PlaneGeometry(gen * 0.92, camH * 0.88),
+      new THREE.MeshBasicMaterial({
+        color: 0xff5520,
+        transparent: true,
+        opacity: 0,
+        depthWrite: false,
+        blending: THREE.AdditiveBlending,
+        side: THREE.DoubleSide
+      })
+    );
+    glow.position.set(localX, yh, 0.62);
+    glow.userData = {
+      bolme: meta.bolme,
+      glow: true,
+      cepheDis: meta.cepheDis,
+      yuz: meta.yuz
+    };
+    parent.add(glow);
+    camGroup.push(glow);
+    return glow;
   }
 
   function cepheKur() {
@@ -583,20 +625,7 @@
 
         var cam = new THREE.Mesh(
           new THREE.BoxGeometry(gen * 0.86, camH * 0.8, 0.07),
-          new THREE.MeshPhysicalMaterial({
-            color: 0x7ab4c8,
-            metalness: 0.15,
-            roughness: 0.06,
-            envMap: envMap,
-            envMapIntensity: 1.35,
-            clearcoat: 1,
-            clearcoatRoughness: 0.06,
-            reflectivity: 0.9,
-            transparent: true,
-            opacity: 0.9,
-            emissive: 0x0c2434,
-            emissiveIntensity: 0.12
-          })
+          camMateryal()
         );
         cam.position.set(localX, yh, 0.55);
         cam.userData = { bolme: bolme, kat: kat, cepheDis: kenar.dis, yuz: YUZ };
@@ -622,21 +651,9 @@
           heatLights.push(heat);
         }
 
-        var glow = new THREE.Mesh(
-          new THREE.PlaneGeometry(gen * 0.9, camH * 0.85),
-          new THREE.MeshBasicMaterial({
-            color: 0xff5520,
-            transparent: true,
-            opacity: 0,
-            depthWrite: false,
-            blending: THREE.AdditiveBlending,
-            side: THREE.DoubleSide
-          })
-        );
-        glow.position.set(localX, yh, 0.6);
-        glow.userData = { bolme: bolme, glow: true, cepheDis: kenar.dis, yuz: YUZ };
-        facade.add(glow);
-        camGroup.push(glow);
+        isiGlowEkle(facade, localX, yh, gen * 0.9, camH * 0.85, {
+          bolme: bolme, cepheDis: kenar.dis, yuz: YUZ
+        });
 
         // Saçak / balkon — tüm sıralarda hareketli
         if (kat < KATLAR - 1 && hareketliSacak) {
@@ -747,51 +764,44 @@
       color: 0x1c2228, metalness: 0.7, roughness: 0.35, envMap: envMap, envMapIntensity: 0.4
     });
 
-    // Diğer cepheler: her pencere pusula/normal ile işlevsel (ısı + saçak)
+    // Diğer tüm cepheler: işlevsel cam + ısı glow + saçak
     KENAR.forEach(function (k2, idx) {
-      if (idx === YUZ || k2.boy < 28) return;
-      var yan = cepheGrup(k2, 0.42);
+      if (idx === YUZ || k2.boy < 14) return;
+      var yan = cepheGrup(k2, 0.55);
       scene.add(yan);
-      var adet = Math.max(4, Math.min(10, Math.floor(k2.boy / 9)));
-      var katAdet = Math.min(KATLAR, 11);
+      var adet = Math.max(3, Math.min(12, Math.floor(k2.boy / 8)));
+      var katAdet = KATLAR;
       var b, kat2;
       for (b = 0; b < adet; b++) {
         for (kat2 = 0; kat2 < katAdet; kat2++) {
           var t = (b + 0.5) / adet;
           var lx = (t - 0.5) * k2.boy;
-          var yh2 = 5.0 + kat2 * 5.6;
-          var gen2 = Math.min(7.2, k2.boy / adet * 0.62);
-          var camH2 = 2.7;
-          var fr = new THREE.Mesh(new THREE.BoxGeometry(gen2 + 0.28, camH2 + 0.4, 0.16), frameYan);
-          fr.position.set(lx, yh2, 0.14);
+          var z0 = 4.15 + kat2 * 5.45;
+          var camH2 = 3.2;
+          var yh2 = z0 + camH2 * 0.5;
+          var gen2 = Math.min(8.0, k2.boy / adet * 0.72);
+          var fr = new THREE.Mesh(new THREE.BoxGeometry(gen2 + 0.3, camH2 + 0.45, 0.18), frameYan);
+          fr.position.set(lx, yh2, 0.16);
           fr.castShadow = true;
           yan.add(fr);
+
           var cam2 = new THREE.Mesh(
-            new THREE.BoxGeometry(gen2, camH2, 0.07),
-            new THREE.MeshPhysicalMaterial({
-              color: 0x7ab4c8,
-              metalness: 0.18,
-              roughness: 0.08,
-              envMap: envMap,
-              envMapIntensity: 1.15,
-              clearcoat: 0.85,
-              clearcoatRoughness: 0.08,
-              transparent: true,
-              opacity: 0.9,
-              emissive: 0x0c2434,
-              emissiveIntensity: 0.1
-            })
+            new THREE.BoxGeometry(gen2, camH2 * 0.82, 0.08),
+            camMateryal()
           );
-          cam2.position.set(lx, yh2, 0.26);
+          cam2.position.set(lx, yh2, 0.32);
           cam2.userData = { bolme: b, kat: kat2, cepheDis: k2.dis, yuz: idx };
           cam2.castShadow = true;
           yan.add(cam2);
           camGroup.push(cam2);
 
-          // Hareketli saçak — her cephede
+          isiGlowEkle(yan, lx, yh2, gen2, camH2 * 0.82, {
+            bolme: b, cepheDis: k2.dis, yuz: idx
+          });
+
           if (kat2 < katAdet - 1) {
             var sacak2 = new THREE.Mesh(
-              new THREE.BoxGeometry(gen2 * 0.94, 0.12, 1),
+              new THREE.BoxGeometry(gen2 * 0.94, 0.14, 1),
               new THREE.MeshStandardMaterial({
                 color: 0x2c2216,
                 metalness: 0.5,
@@ -803,7 +813,7 @@
               })
             );
             sacak2.geometry.translate(0, 0, 0.5);
-            sacak2.position.set(lx, yh2 + camH2 * 0.52, 0.2);
+            sacak2.position.set(lx, z0 + camH2 + 0.12, 0.28);
             sacak2.userData = { bolme: b, baz: 0.05, hareketli: true, yuz: idx };
             sacak2.scale.z = 0.05;
             sacak2.castShadow = true;
@@ -811,13 +821,19 @@
             sacakMeshler.push(sacak2);
 
             var alt2 = new THREE.Mesh(
-              new THREE.BoxGeometry(gen2 * 0.9, 0.04, 1),
-              metalYan
+              new THREE.BoxGeometry(gen2 * 0.9, 0.05, 1),
+              new THREE.MeshStandardMaterial({
+                color: 0xe8b45a,
+                emissive: 0xa87418,
+                emissiveIntensity: 0.35,
+                metalness: 0.45,
+                roughness: 0.3
+              })
             );
             alt2.geometry.translate(0, 0, 0.5);
-            alt2.position.set(lx, yh2 + camH2 * 0.48, 0.2);
-            alt2.userData = { bolme: b, baz: 0.05, alt: true, hareketli: true, yuz: idx };
-            alt2.scale.z = 0.05;
+            alt2.position.set(lx, z0 + camH2 + 0.02, 0.28);
+            alt2.userData = { bolme: b, baz: 0.06, alt: true, hareketli: true, yuz: idx };
+            alt2.scale.z = 0.06;
             yan.add(alt2);
             sacakMeshler.push(alt2);
           }
@@ -1348,40 +1364,50 @@
     var G = k.Golge;
     var gunes = durum.gunes;
     var hotCount = 0;
+    var pulse = Math.sin(clock.elapsedTime * 3.2);
+
     camGroup.forEach(function (cam) {
       var sacak = durum.sacakTaban + durum.sacakAnlik * durum.sacakEk;
       var normal = camNormal(cam);
       var sonuc = G.golgeMetre(gunes, sacak, normal);
-      var sicak = G.sicakMi(gunes, sacak, normal);
+      var sicak = sonuc.onde && sonuc.pay > (G.ayar && G.ayar.esik != null ? G.ayar.esik : 0.5);
+      var pay = sonuc.pay || 0;
       if (sicak) hotCount += 1;
 
       if (cam.userData.glow) {
-        // Glow yalnızca pusulanın seçtiği cephede
-        var aktif = cam.userData.yuz === durum.aktifYuz;
-        cam.material.opacity = (sicak && aktif)
-          ? 0.22 + Math.sin(clock.elapsedTime * 3.2) * 0.08
-          : 0;
+        // Tüm cephelerde ısı glow — güneş vuran cam kırmızı yanar
+        if (sicak) {
+          cam.material.opacity = 0.28 + pulse * 0.1;
+          cam.material.color.setHex(0xff3a18);
+        } else if (pay > 0.2) {
+          cam.material.opacity = 0.1 + pay * 0.2;
+          cam.material.color.setHex(0xffa030);
+        } else {
+          cam.material.opacity = 0;
+        }
         return;
       }
 
-      var r = camRengi(sicak, sonuc.pay);
+      var r = camRengi(sicak, pay);
       cam.material.color.setHex(r.color);
       if (cam.material.emissive) {
         cam.material.emissive.setHex(r.emissive);
-        cam.material.emissiveIntensity = r.ei + (sicak ? Math.sin(clock.elapsedTime * 3.4) * 0.1 : 0);
+        cam.material.emissiveIntensity = r.ei + (sicak ? pulse * 0.15 : pay * 0.2);
+      }
+      // Kızaran cam biraz daha opak okunur
+      if (cam.material.opacity != null) {
+        cam.material.opacity = sicak ? 0.98 : (pay > 0.15 ? 0.94 : 0.88);
       }
     });
 
     heatLights.forEach(function (l) {
-      l.intensity = hotCount > 0 ? 0.9 + Math.sin(clock.elapsedTime * 2.6) * 0.18 : 0;
+      l.intensity = hotCount > 0 ? 1.1 + pulse * 0.2 : 0;
     });
 
     sacakMeshler.forEach(function (s) {
       var hedef = s.userData.baz;
       if (s.userData.hareketli) {
-        // Saçak tüm cephelerde açılır; pusula cephesinde biraz daha belirgin
-        var carpim = (s.userData.yuz == null || s.userData.yuz === durum.aktifYuz) ? 1.75 : 1.35;
-        hedef = Math.max(0.06, durum.sacakTaban + durum.sacakAnlik * Math.max(0.2, durum.sacakEk) * carpim);
+        hedef = Math.max(0.06, durum.sacakTaban + durum.sacakAnlik * Math.max(0.2, durum.sacakEk) * 1.7);
         if (!s.userData.alt && !s.userData.destek && s.material && s.material.emissiveIntensity != null) {
           s.material.color.setHex(durum.sacakAnlik > 0.25 ? 0xe8b45a : 0x1e1a16);
           s.material.emissiveIntensity = durum.sacakAnlik > 0.25 ? 0.4 : 0.1;
