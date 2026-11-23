@@ -246,8 +246,9 @@
   }
 
   function raporKur(gunlukFark, yil) {
-    var geri = durum.maliyet > 0 && yil.yilTl > 0
-      ? (durum.maliyet / yil.yilTl).toFixed(1).replace(".", ",") + " yıl"
+    var tlNet = yil.netTl != null ? yil.netTl : yil.yilTl;
+    var geri = durum.maliyet > 0 && tlNet > 0
+      ? (durum.maliyet / tlNet).toFixed(1).replace(".", ",") + " yıl"
       : "—";
     yil.geriOdemeYil = geri;
     var bina = S.binaBul(durum.binaId);
