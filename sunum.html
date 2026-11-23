@@ -58,28 +58,66 @@
 
   <section class="slayt" data-mod="etki">
     <p class="no reveal">6 / 8 · Etki</p>
-    <h1 class="reveal reveal-d1">Saat kısalır. kWh düşer.</h1>
-    <p class="lead reveal reveal-d2">Ağustos örneği · 1,2 kW × 5 daire × 50 sıcak gün · net hesap</p>
-    <div class="rakamlar reveal reveal-d3">
-      <div class="rakam"><strong data-count="3.3" data-suffix=" sa">0</strong><span>Günlük fark</span></div>
-      <div class="rakam"><strong data-count="943" data-suffix=" kWh">0</strong><span>Net / yıl</span></div>
-      <div class="rakam"><strong data-count="377" data-suffix=" kg">0</strong><span>Net CO₂</span></div>
-    </div>
-    <p class="kaynak reveal reveal-d4">
-      Brüt ~1&nbsp;000 kWh (3,3 × 1,2 × 5 × 50) → ayak izi −7 kWh (web+API+IoT) → sıçrama −50 kWh (%5) →
-      <strong>net ~943 kWh / ~377 kg CO₂</strong>
-      (×0,4 kg/kWh · Ember/OWID–EEA bandı ~0,35–0,45) · OSM · Open-Meteo · etki.html
+    <h1 class="reveal reveal-d1">Ölçülebilir net etki.</h1>
+    <p class="lead reveal reveal-d2">Kaynak: klima saati. Birim: kWh ve kg CO₂. Jüriye <span class="vurgu">net</span> veriyoruz.</p>
+    <p class="formül reveal reveal-d2">
+      Yıllık brüt = günlük fark × 1,2&nbsp;kW × 5 daire × 50 sıcak gün
+      <span>·</span>
+      Net = brüt − ayak izi − sıçrama
     </p>
+    <div class="rakamlar reveal reveal-d3">
+      <div class="rakam">
+        <strong data-count="3.3" data-suffix=" sa">0</strong>
+        <span>Günlük fark</span>
+        <em class="rakam-alt">Güneş/saçak modeli · İstanbul</em>
+      </div>
+      <div class="rakam rakam-net">
+        <strong data-count="943" data-suffix=" kWh">0</strong>
+        <span>Net / yıl</span>
+        <em class="rakam-alt">Brüt 1&nbsp;000 − 57</em>
+      </div>
+      <div class="rakam rakam-net">
+        <strong data-count="377" data-suffix=" kg">0</strong>
+        <span>Net CO₂</span>
+        <em class="rakam-alt">× 0,4 kg/kWh</em>
+      </div>
+    </div>
+    <div class="etki-akis reveal reveal-d4">
+      <div class="akis-adim">
+        <span class="akis-etiket">Brüt</span>
+        <strong>~1&nbsp;000 kWh</strong>
+        <p>3,3 × 1,2 × 5 × 50</p>
+      </div>
+      <div class="akis-ok" aria-hidden="true">→</div>
+      <div class="akis-adim dusum">
+        <span class="akis-etiket">Ayak izi</span>
+        <strong>−7 kWh</strong>
+        <p>Yerel web + API + IoT</p>
+      </div>
+      <div class="akis-ok" aria-hidden="true">→</div>
+      <div class="akis-adim dusum">
+        <span class="akis-etiket">Sıçrama</span>
+        <strong>−50 kWh</strong>
+        <p>%5 konfor varsayımı</p>
+      </div>
+      <div class="akis-ok" aria-hidden="true">→</div>
+      <div class="akis-adim sonuc">
+        <span class="akis-etiket">Net</span>
+        <strong>~943 kWh</strong>
+        <p>~377 kg CO₂ · %94 kalır</p>
+      </div>
+    </div>
   </section>
 
   <section class="slayt" data-mod="acilis">
     <p class="no reveal">7 / 8 · Dürüstlük</p>
     <h1 class="reveal reveal-d1">Örnek cephe. Şişirilmedi.</h1>
-    <p class="lead reveal reveal-d2">Kadıköy’de ölçülmüş bir bina değildir. Brütü şişirmedik; neti ayak izi ve sıçramayla düşürdük. Hâlâ pozitif.</p>
-    <p class="kaynak reveal reveal-d3">
-      CO₂: 0,4 kg/kWh (TR elektrik ~0,35–0,45 bandı; Ember / OWID / EEA yaklaşımı) ·
-      Araç: yerel, sunucu yok · Sıçrama %5 · Detay: etki.html
-    </p>
+    <p class="lead reveal reveal-d2">Kadıköy’de ölçülmüş bir bina değil. Varsayımlar açık; net hâlâ pozitif.</p>
+    <div class="adimlar reveal reveal-d3">
+      <div class="adim"><b>CO₂</b><p>0,4 kg/kWh · Ember / OWID / EEA bandı ~0,35–0,45</p></div>
+      <div class="adim"><b>Araç</b><p>Yerel istemci · kalıcı sunucu yok · &lt;%1 brüt</p></div>
+      <div class="adim"><b>Detay</b><p>etki.html · adım adım formül ve kaynaklar</p></div>
+    </div>
   </section>
 
   <section class="slayt" data-mod="demo">
