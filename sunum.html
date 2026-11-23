@@ -83,8 +83,9 @@
   <div class="kontroller">
     <button type="button" id="onceki">Önceki</button>
     <button type="button" id="sonraki">Sonraki</button>
+    <button type="button" id="tamEkran" title="Tam ekran (F)">Tam ekran</button>
     <span id="sayac">1 / 8</span>
-    <span class="ipucu-klavye">← → boşluk</span>
+    <span class="ipucu-klavye">← → boşluk · F</span>
     <a href="index.html">Uygulama</a>
   </div>
 
@@ -111,13 +112,47 @@
 
       function boyutla() {
         dpr = Math.min(Math.max(window.devicePixelRatio || 1, 1), 3);
-        w = window.innerWidth;
-        h = window.innerHeight;
+        var vv = window.visualViewport;
+        w = Math.round((vv && vv.width) || window.innerWidth);
+        h = Math.round((vv && vv.height) || window.innerHeight);
         canvas.width = Math.round(w * dpr);
         canvas.height = Math.round(h * dpr);
         canvas.style.width = w + "px";
         canvas.style.height = h + "px";
         ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+      }
+
+      function tamEkranAktif() {
+        return !!(document.fullscreenElement || document.webkitFullscreenElement || document.msFullscreenElement);
+      }
+
+      function tamEkranaGir() {
+        var el = document.documentElement;
+        var req = el.requestFullscreen || el.webkitRequestFullscreen || el.webkitRequestFullScreen || el.msRequestFullscreen;
+        if (!req) return Promise.reject(new Error("unsupported"));
+        return Promise.resolve(req.call(el)).catch(function () {
+          /* Safari: bazen document.body gerekir */
+          var reqBody = document.body.requestFullscreen || document.body.webkitRequestFullscreen;
+          if (reqBody) return reqBody.call(document.body);
+        });
+      }
+
+      function tamEkrandanCik() {
+        var exit = document.exitFullscreen || document.webkitExitFullscreen || document.webkitCancelFullScreen || document.msExitFullscreen;
+        if (exit) return Promise.resolve(exit.call(document));
+        return Promise.resolve();
+      }
+
+      function tamEkranToggle() {
+        if (tamEkranAktif()) tamEkrandanCik();
+        else tamEkranaGir();
+      }
+
+      function tamEkranEtiket() {
+        var btn = document.getElementById("tamEkran");
+        if (!btn) return;
+        btn.textContent = tamEkranAktif() ? "Çık" : "Tam ekran";
+        btn.setAttribute("aria-pressed", tamEkranAktif() ? "true" : "false");
       }
 
       function lerp(a, b, t) { return a + (b - a) * t; }
@@ -274,8 +309,13 @@
         gunesHedef = MODLAR[mod] || MODLAR.acilis;
       }
 
-      window.addEventListener("resize", function () {
-        boyutla();
+      window.addEventListener("resize", boyutla);
+      if (window.visualViewport) window.visualViewport.addEventListener("resize", boyutla);
+      ["fullscreenchange", "webkitfullscreenchange", "MSFullscreenChange"].forEach(function (ev) {
+        document.addEventListener(ev, function () {
+          tamEkranEtiket();
+          setTimeout(boyutla, 50);
+        });
       });
       boyutla();
       raf = requestAnimationFrame(kare);
@@ -332,8 +372,14 @@
 
       document.getElementById("onceki").addEventListener("click", function () { goster(sira - 1); });
       document.getElementById("sonraki").addEventListener("click", function () { goster(sira + 1); });
+      document.getElementById("tamEkran").addEventListener("click", function () { tamEkranToggle(); });
       document.addEventListener("keydown", function (e) {
-        if (e.target.closest && e.target.closest("a, button, input")) return;
+        if (e.target.closest && e.target.closest("a, button, input, textarea")) return;
+        if ((e.key === "f" || e.key === "F") && !e.metaKey && !e.ctrlKey && !e.altKey) {
+          e.preventDefault();
+          tamEkranToggle();
+          return;
+        }
         if (e.key === "ArrowRight" || e.key === " " || e.key === "PageDown") {
           e.preventDefault();
           goster(sira + 1);
