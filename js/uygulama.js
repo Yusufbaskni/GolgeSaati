@@ -685,7 +685,8 @@
       sacakVar: durum.sacakVar,
       gunes: gunes,
       sacakTaban: durum.sacak,
-      sacakEk: durum.ek
+      sacakEk: durum.ek,
+      normal: durum.normal
     });
 
     var ciplak = G.araliklar(ay.gun, durum.sacak, durum.normal);
