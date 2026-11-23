@@ -186,6 +186,56 @@ body.mod-etki .marka-kose { color: var(--sicak); }
   transform: none;
 }
 
+/* Demo slaydı: saçak/cam fotoğrafı — kenardan kenara görsel zemin */
+.slayt-foto {
+  padding: 0;
+  justify-content: flex-end;
+}
+.slayt-foto-zemin {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  overflow: hidden;
+  pointer-events: none;
+}
+.slayt-foto-zemin::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background:
+    linear-gradient(90deg, rgba(10, 14, 12, 0.92) 0%, rgba(10, 14, 12, 0.72) 38%, rgba(10, 14, 12, 0.28) 62%, rgba(10, 14, 12, 0.45) 100%),
+    linear-gradient(0deg, rgba(10, 14, 12, 0.75) 0%, transparent 42%);
+}
+.slayt-foto-zemin img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center 40%;
+  display: block;
+  transform: scale(1.04);
+  transition: transform 1.4s var(--ease);
+}
+.slayt-foto.aktif .slayt-foto-zemin img {
+  transform: scale(1);
+}
+.slayt-foto-icerik {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  min-height: 100%;
+  padding: 11vh 5vw 13vh;
+  max-width: min(560px, 92vw);
+}
+.slayt-foto .lead {
+  color: rgba(246, 241, 232, 0.82);
+  text-shadow: 0 8px 28px rgba(0, 0, 0, 0.45);
+}
+.slayt-foto h1 {
+  text-shadow: 0 16px 48px rgba(0, 0, 0, 0.55);
+}
+
 .no {
   margin: 0 0 20px;
   font-size: 12px;
@@ -586,6 +636,14 @@ body.mod-etki .ipucu-klavye { color: rgba(28, 25, 20, 0.38); }
   .etki-akis { flex-direction: column; }
   .akis-ok { display: none; }
   .akis-adim { min-width: 0; }
+  .slayt-foto-icerik {
+    padding: 14vh 6vw 18vh;
+    max-width: none;
+  }
+  .slayt-foto-zemin::after {
+    background:
+      linear-gradient(0deg, rgba(10, 14, 12, 0.9) 0%, rgba(10, 14, 12, 0.55) 45%, rgba(10, 14, 12, 0.4) 100%);
+  }
 }
 
 @media (min-resolution: 2dppx) {
