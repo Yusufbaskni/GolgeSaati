@@ -191,7 +191,7 @@
   /**
    * Cam dış yüzeyi (°C) — sol-air yaklaşımı:
    * T ≈ T_hava + küçük ofset + (doğrudan ışınım × SHGC × güneşlenen pay)
-   * Saçak farkı yalnızca pay farkından gelir; abartılı 15–20° sıçrama yok.
+   * Perde farkı yalnızca pay farkından gelir; abartılı 15–20° sıçrama yok.
    */
   function camDerece(gunes, sacakM) {
     var g = G.golgeMetre(gunes, sacakM, durum.normal);
@@ -215,7 +215,7 @@
     }
 
     var pay = g.onde ? g.pay : 0;
-    // Diffüz / gökyüzü: saçaklı camda da az ısınma
+    // Diffüz / gökyüzü: perde inik camda da az ısınma
     var diffuz = 0.9 * shgc * (1 - 0.55 * bulut) * Math.max(0, sinAlt);
     // Doğrudan güneşte SHGC=1 için hava üstü ~16°C; SHGC ile ölçek
     var dogrudan = 16 * shgc * isinim * pay;
@@ -559,7 +559,7 @@
     });
 
     if (simdiAcik && aktif) {
-      programDurum.textContent = "Şimdi saçağı AÇIK tut · kapanış " + G.saatYazi(aktif[1]);
+      programDurum.textContent = "Şimdi perdeyi İNİK tut · kaldırma " + G.saatYazi(aktif[1]);
       programDurum.className = "program-durum ac";
       if (programSonraki) {
         programSonraki.textContent = "Açık aralık: " + G.saatYazi(aktif[0]) + "–" + G.saatYazi(aktif[1]) +
@@ -571,7 +571,7 @@
         if (simdi < ciplak[i][0]) { sonraki = ciplak[i]; break; }
       }
       if (sonraki) {
-        programDurum.textContent = "Saçağı " + G.saatYazi(sonraki[0]) + " gibi aç";
+        programDurum.textContent = "Perdeyi " + G.saatYazi(sonraki[0]) + " gibi indir";
         programDurum.className = "program-durum ac";
         if (programSonraki) {
           programSonraki.textContent = "Açık kalacak: " + G.saatYazi(sonraki[0]) + "–" + G.saatYazi(sonraki[1]);
@@ -597,7 +597,7 @@
     var anahtar = ayAd + "-" + (prog.aktif ? prog.aktif[0] : "");
     if (anahtar === sonBildirimAnahtar) return;
     sonBildirimAnahtar = anahtar;
-    var baslik = "Saçağı aç";
+    var baslik = "Perdeyi indir";
     var govde = ayAd + " · " + G.saatYazi(prog.aktif[0]) + "–" + G.saatYazi(prog.aktif[1]) +
       " arasında perde inik olmalı.";
     if (typeof Notification === "undefined") return;
@@ -812,7 +812,7 @@
     }
     if (durumYazi) {
       if (prog && prog.simdiAcik && !durum.sacakVar) {
-        durumYazi.textContent = "Saçağı aç · " + G.saatYazi(prog.aktif[0]) + "–" + G.saatYazi(prog.aktif[1]);
+        durumYazi.textContent = "Perdeyi indir · " + G.saatYazi(prog.aktif[0]) + "–" + G.saatYazi(prog.aktif[1]);
         durumYazi.classList.add("aktif");
       } else {
         durumYazi.textContent = durum.sacakVar ? "Solar Curtain inik" : "Çıplak cam";
@@ -1288,7 +1288,7 @@
       lat: durum.lat,
       lon: durum.lon
     });
-    S.indir("golge-saati-sacak.ics", ics, "text/calendar;charset=utf-8");
+    S.indir("golge-saati-perde.ics", ics, "text/calendar;charset=utf-8");
     if (paylasNot) paylasNot.textContent = "14 günlük perde takvimi indirildi.";
   });
 

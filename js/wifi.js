@@ -91,7 +91,7 @@
 
   function komutGonder(action) {
     if (!durum.url) {
-      return Promise.reject(new Error("Önce Wi‑Fi saçak adresini gir (örn. 192.168.1.50)"));
+      return Promise.reject(new Error("Önce Wi‑Fi perde adresini gir (örn. 192.168.1.50)"));
     }
     return iste(action).catch(function () {
       // Eski / basit firmware: /open /close

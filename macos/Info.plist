@@ -23,11 +23,11 @@
   <key>NSHighResolutionCapable</key>
   <true/>
   <key>NSLocationWhenInUseUsageDescription</key>
-  <string>Güneş ve saçak hesabı için bulunduğun konumu kullanır.</string>
+  <string>Güneş ve perde hesabı için bulunduğun konumu kullanır.</string>
   <key>NSBluetoothAlwaysUsageDescription</key>
-  <string>Saçak motoruna bağlanıp açma/kapama komutu göndermek için Bluetooth kullanılır.</string>
+  <string>Solar Curtain motoruna bağlanıp indirme/kaldırma komutu göndermek için Bluetooth kullanılır.</string>
   <key>NSBluetoothPeripheralUsageDescription</key>
-  <string>Saçak motoruna bağlanıp açma/kapama komutu göndermek için Bluetooth kullanılır.</string>
+  <string>Solar Curtain motoruna bağlanıp indirme/kaldırma komutu göndermek için Bluetooth kullanılır.</string>
   <key>NSAppTransportSecurity</key>
   <dict>
     <key>NSAllowsArbitraryLoadsInWebContent</key>

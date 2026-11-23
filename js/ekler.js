@@ -116,7 +116,7 @@
 
   function icalUret(opts) {
     opts = opts || {};
-    var baslik = opts.baslik || "Gölge Saati saçak";
+    var baslik = opts.baslik || "Gölge Saati · Solar Curtain";
     var araliklar = opts.araliklar || [];
     var gunSay = opts.gunSay || 14;
     var lat = opts.lat;
@@ -140,7 +140,7 @@
         satirlar.push("DTSTART:" + icsTarih(gun, a[0]));
         satirlar.push("DTEND:" + icsTarih(gun, a[1]));
         satirlar.push("SUMMARY:" + icsEsc(baslik + " AÇIK"));
-        satirlar.push("DESCRIPTION:" + icsEsc("Saçağı açık tut · Gölge Saati"));
+        satirlar.push("DESCRIPTION:" + icsEsc("Perdeyi inik tut · Gölge Saati · Solar Curtain"));
         if (lat != null && lon != null) {
           satirlar.push("GEO:" + lat + ";" + lon);
         }

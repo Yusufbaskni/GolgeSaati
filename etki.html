@@ -19,7 +19,7 @@
   </header>
   <article class="sayfa">
     <p>Rakamlar, seçilen cephede klimanın güneş yükü yüzünden çalıştığı süreden türetilir. Birim: kWh. Maliyet TL/kWh ile, karbon şebeke katsayısıyla yazılır. Jüriye sunulan etki <strong>net</strong>tir: brüt tasarruftan aracın kendi ayak izi ve sıçrama düşülür.</p>
-    <p>Fiziksel gölgeleme <strong>saçak değil</strong>: paneller <a href="https://solarcurtain.co" target="_blank" rel="noopener noreferrer">Solar Curtain</a> (solarcurtain.co) ürünlerinden alınır — cam önünde inen, kumaşa gömülü hücrelerle elektrik üreten akıllı perde (Zebra / Blackout). Gölge Saati ne zaman ineceğini / kalkacağını hesaplar; indirilince cam soğur ve panel üretim yapar.</p>
+    <p>Fiziksel gölgeleme panelleri <a href="https://solarcurtain.co" target="_blank" rel="noopener noreferrer">Solar Curtain</a> (solarcurtain.co) ürünlerinden alınır — cam önünde inen, kumaşa gömülü hücrelerle elektrik üreten akıllı perde (Zebra / Blackout). Gölge Saati ne zaman ineceğini / kalkacağını hesaplar; indirilince cam soğur ve panel üretim yapar.</p>
 
     <h2>Örnek net etki (sunum senaryosu)</h2>
     <table>
@@ -30,7 +30,7 @@
         <tr><td>Brüt tasarruf</td><td>~1&nbsp;000 kWh / yıl</td><td>3,3 sa × 1,2 kW × 5 daire × 50 sıcak gün</td></tr>
         <tr><td>Brüt CO₂</td><td>~400 kg / yıl</td><td>× 0,4 kg CO₂/kWh</td></tr>
         <tr><td>Araç ayak izi</td><td>−5 kWh / yıl</td><td>Yerel web (sunucu yok) + Open-Meteo/OSM çağrıları + ara sıra kullanım</td></tr>
-        <tr><td>Saçak motoru (opsiyonel IoT)</td><td>−2 kWh / yıl</td><td>~100 aç/kapa × ~20 Wh (ESP32 + aktüatör kabaca)</td></tr>
+        <tr><td>Perde motoru (opsiyonel IoT)</td><td>−2 kWh / yıl</td><td>~100 aç/kapa × ~20 Wh (ESP32 + aktüatör kabaca)</td></tr>
         <tr><td>Sıçrama etkisi</td><td>−50 kWh / yıl</td><td>Brütün %5’i: konfor artınca setpoint gevşemesi varsayımı</td></tr>
         <tr><td><strong>Net kWh</strong></td><td><strong>~943 kWh / yıl</strong></td><td>1&nbsp;000 − 5 − 2 − 50</td></tr>
         <tr><td><strong>Net CO₂</strong></td><td><strong>~377 kg / yıl</strong></td><td>943 × 0,4</td></tr>
@@ -39,7 +39,7 @@
     <p>Net / brüt ≈ %94. Araç ayak izi brütün &lt;%1’i; sıçrama baskın düşümdür. Kesin ölçüm beklenmez — gerekçeli satır yeter.</p>
 
     <h2>Formül</h2>
-    <p>Günlük fark = (çıplak güneşli saat − saçaklı güneşli saat) × (1 − bulut) + kalibrasyon.</p>
+    <p>Günlük fark = (çıplak güneşli saat − perde inik güneşli saat) × (1 − bulut) + kalibrasyon.</p>
     <p>Yıllık brüt kWh = Σ (günlük fark × klima kW × daire × ayın efektif sıcak günü × SHGC/0,65).</p>
     <p>Net kWh = brüt − araç_kWh − motor_kWh − (brüt × sıçrama_oranı).</p>
     <p>Net CO₂ (kg) = net kWh × CO₂ katsayısı (varsayılan 0,4 kg/kWh). TL ≈ net kWh × elektrik fiyatı.</p>
@@ -59,9 +59,9 @@
     </ul>
 
     <h2>Gölge modeli</h2>
-    <p>Güneş yüksekliği ve azimutu seçilen enleme göredir. Cam, güneş cephe önündeyse ve saçak pencere yüksekliğinin yarısından azını örtüyorsa güneşli sayılır. Engel ufku, komşu binanın güneşi kestiği minimum yükseklik açısıdır.</p>
+    <p>Güneş yüksekliği ve azimutu seçilen enleme göredir. Cam, güneş cephe önündeyse ve perde pencere yüksekliğinin yarısından azını örtüyorsa güneşli sayılır. Engel ufku, komşu binanın güneşi kestiği minimum yükseklik açısıdır.</p>
     <h2>Uygulamada</h2>
-    <p>Bina senaryosu, saçak cm, pencere, cephe azimutu, daire, kW, enlem, engel, bulut, kalibrasyon, elektrik fiyatı ve yatırım tutarı düzenlenebilir. Ölçülen sıcak saat girilirse kalibrasyon otomatik ayarlanır. Panelde brüt ve net kWh/CO₂ birlikte görünür. CSV ve PDF rapora net satırlar yazılır.</p>
+    <p>Bina senaryosu, perde gölge eşdeğeri, pencere, cephe azimutu, daire, kW, enlem, engel, bulut, kalibrasyon, elektrik fiyatı ve yatırım tutarı düzenlenebilir. Ölçülen sıcak saat girilirse kalibrasyon otomatik ayarlanır. Panelde brüt ve net kWh/CO₂ birlikte görünür. CSV ve PDF rapora net satırlar yazılır.</p>
     <h2>Varsayımlar</h2>
     <p>3B sahne İş Kuleleri OSM referansıdır. Diğer senaryolar sayısal modeldir. Bulut katsayısı basitleştirilmiş kayıptır. Gerçek fatura doğrulaması için kalibrasyon alanını kullanın. Şişirilmemiş örnek: brüt ~1&nbsp;000 kWh / 400&nbsp;kg → net ~943 kWh / 377&nbsp;kg.</p>
   </article>

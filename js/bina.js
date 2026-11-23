@@ -580,7 +580,7 @@
         var z0 = 4.15 + kat * 5.45;
         var z1 = z0 + 3.55;
         var yh = (z0 + z1) / 2;
-        var hareketliSacak = true; // tüm cam sıralarında açılır saçak
+        var hareketliSacak = true; // tüm cam sıralarında Solar Curtain
         var sicakVurgu = bolme === HEDEF; // performans: nokta ışık tek sütunda
         var camH = z1 - z0;
 
@@ -763,7 +763,7 @@
       color: 0x14181c, metalness: 0.75, roughness: 0.3, envMap: envMap, envMapIntensity: 0.45
     });
 
-    // Diğer tüm cepheler: işlevsel cam + ısı glow + saçak
+    // Diğer tüm cepheler: işlevsel cam + ısı glow + perde
     KENAR.forEach(function (k2, idx) {
       if (idx === YUZ || k2.boy < 14) return;
       var yan = cepheGrup(k2, 0.55);
@@ -950,7 +950,7 @@
     cati.scale.set(1.02, 1, 1.02);
     scene.add(cati);
 
-    // Saçak / korniş — dışarı taşan kenar
+    // Korniş — dışarı taşan kenar
     var kornis = extrudePolygon(PTS, 0.55, {
       color: 0x3a342e, metalness: 0.35, roughness: 0.45,
       envMap: envMap, envMapIntensity: 0.3

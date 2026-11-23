@@ -1,5 +1,5 @@
 (function (k) {
-  // Nordic UART Service — ESP32 / nRF saçak sürücüleri için yaygın
+  // Nordic UART Service — ESP32 / nRF perde sürücüleri için yaygın
   var NUS_SERVICE = "6e400001-b5a3-f393-e0a9-e50e24dcca9e";
   var NUS_RX = "6e400002-b5a3-f393-e0a9-e50e24dcca9e"; // uygulamadan cihaza yaz
   var NUS_TX = "6e400003-b5a3-f393-e0a9-e50e24dcca9e"; // cihazdan bildir
@@ -46,6 +46,8 @@
         { namePrefix: "Gölge" },
         { namePrefix: "Sacak" },
         { namePrefix: "Saçak" },
+        { namePrefix: "SolarCurtain" },
+        { namePrefix: "Solar" },
         { services: [NUS_SERVICE] }
       ],
       optionalServices: [NUS_SERVICE]
@@ -65,7 +67,7 @@
     }).then(function (ch) {
       webChar = ch;
       durum.bagli = true;
-      durum.ad = (webDevice && webDevice.name) || "BLE saçak";
+      durum.ad = (webDevice && webDevice.name) || "BLE Solar Curtain";
       durum.kaynak = "web";
       bildir();
       return durum;
@@ -93,7 +95,7 @@
           clearTimeout(timer);
           window.__golgeBleCb = null;
           durum.bagli = true;
-          durum.ad = msg.name || "Mac BLE saçak";
+          durum.ad = msg.name || "Mac BLE Solar Curtain";
           durum.kaynak = "mac";
           bildir();
           resolve(durum);
@@ -124,7 +126,7 @@
 
   function baglanSanal() {
     durum.bagli = true;
-    durum.ad = "Sanal saçak (demo)";
+    durum.ad = "Sanal Solar Curtain (demo)";
     durum.kaynak = "sanal";
     bildir();
     return Promise.resolve(durum);

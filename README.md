@@ -1,6 +1,6 @@
 # Gölge Saati
 
-İstanbul’da batıya bakan bir cephede, güneşin hangi cama hangi saatte vurduğunu gösterir. Klima açılmaz. Sabit saçak yok — **[Solar Curtain](https://solarcurtain.co)** panelli perde iner, camı gölgeler ve elektrik üretir; klima daha kısa çalışır.
+İstanbul’da batıya bakan bir cephede, güneşin hangi cama hangi saatte vurduğunu gösterir. Klima açılmaz. **[Solar Curtain](https://solarcurtain.co)** panelli perde iner, camı gölgeler ve elektrik üretir; klima daha kısa çalışır.
 
 **Kategori:** Şehir verisi (OSM + güneş modeli; kişisel klima verisi tutulmaz).  
 **Donanım:** [solarcurtain.co](https://solarcurtain.co) — Zebra / Blackout elektrik üreten akıllı perde (Türkiye).
@@ -29,7 +29,7 @@ Mac (Electron yok):
 macos/kur.sh
 ```
 
-**Jüri demosu:** uygulamada «Jüri demosu» — veya elle Ağustos → 14.30 → saçak aç.
+**Jüri demosu:** uygulamada «Jüri demosu» — veya elle Ağustos → 14.30 → perdeyi indir.
 
 ## Geliştirme notu
 
@@ -40,5 +40,5 @@ Prototip kodu, vaka metninin paylaşılmasından sonraki hazırlık haftasında 
 - Güneş: astronomik yükseklik / azimut (istemci)
 - Bina / cephe: OpenStreetMap
 - Hava: Open-Meteo
-- Saçak: program + isteğe bağlı Wi‑Fi / Bluetooth
+- Solar Curtain: program + isteğe bağlı Wi‑Fi / Bluetooth
 - CO₂ katsayısı: ~0,4 kg/kWh (TR şebeke yaklaşık; EEA / ülke elektrik emisyon faktörü bandı — ayrıntı `etki.html`)

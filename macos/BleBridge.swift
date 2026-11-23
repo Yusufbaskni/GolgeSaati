@@ -56,7 +56,7 @@ final class BleBridge: NSObject, CBCentralManagerDelegate, CBPeripheralDelegate 
             self.scanning = false
             self.central.stopScan()
             if self.peripheral == nil {
-                self.push(["type": "error", "message": "Saçak bulunamadı · GolgeSaati / NUS cihazını aç"])
+                self.push(["type": "error", "message": "Solar Curtain bulunamadı · GolgeSaati / NUS cihazını aç"])
             }
         }
     }
@@ -74,7 +74,7 @@ final class BleBridge: NSObject, CBCentralManagerDelegate, CBPeripheralDelegate 
 
     private func sendCommand(_ action: String) {
         guard let p = peripheral, let ch = rxChar else {
-            push(["type": "error", "message": "Saçak bağlı değil"])
+            push(["type": "error", "message": "Perde bağlı değil"])
             return
         }
         let text = action == "open" ? "OPEN\n" : action == "close" ? "CLOSE\n" : "STATUS\n"
@@ -149,7 +149,7 @@ final class BleBridge: NSObject, CBCentralManagerDelegate, CBPeripheralDelegate 
             push(["type": "error", "message": "Yazma karakteristiği yok"])
             return
         }
-        push(["type": "connected", "name": peripheral.name ?? "BLE saçak"])
+        push(["type": "connected", "name": peripheral.name ?? "BLE Solar Curtain"])
     }
 
     func peripheral(_ peripheral: CBPeripheral, didWriteValueFor characteristic: CBCharacteristic, error: Error?) {
