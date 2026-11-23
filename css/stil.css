@@ -131,8 +131,15 @@ h1 {
   margin: 10px 0 0;
   font-family: var(--yazi);
   font-style: italic;
-  font-size: 20px;
+  font-size: clamp(15px, 1.6vw, 18px);
+  line-height: 1.25;
   color: rgba(235, 230, 220, 0.72);
+  max-width: 100%;
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
+  line-clamp: 2;
+  overflow: hidden;
 }
 
 .ust-nav {
@@ -210,13 +217,14 @@ h1 {
 }
 
 .legend {
-  position: fixed;
-  left: 32px;
-  top: 148px;
-  z-index: 5;
+  position: relative;
+  left: auto;
+  top: auto;
+  z-index: 1;
   display: grid;
   gap: 6px;
-  animation: markaGir 1s 0.3s cubic-bezier(0.22, 1, 0.36, 1) both;
+  margin-top: 16px;
+  animation: none;
 }
 
 .leg {

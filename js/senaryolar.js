@@ -257,8 +257,11 @@
 
   function kisaltAd(display) {
     if (!display) return "Seçilen konum";
-    var parca = display.split(",");
-    return parca.slice(0, Math.min(3, parca.length)).join(",").trim();
+    var parca = String(display).split(",").map(function (p) { return p.trim(); }).filter(Boolean);
+    // En fazla 2 parça · uzun kampüs adresleri başlığı bozmasın
+    var kisa = parca.slice(0, Math.min(2, parca.length)).join(", ");
+    if (kisa.length > 56) kisa = kisa.slice(0, 53).trim() + "…";
+    return kisa;
   }
 
   function adresAra(sorgu) {

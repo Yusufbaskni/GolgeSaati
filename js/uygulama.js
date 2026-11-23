@@ -377,12 +377,20 @@
     var b = S.binaBul(durum.binaId);
     var yer = durum.yer || b.yer;
     var ad = durum.yerAd || b.ad;
-    if (markaUst) markaUst.textContent = (yer.split(",")[0] || "Konum") + " · Şehir verisi";
+    var kisa = S.kisaltAd ? S.kisaltAd(ad) : ad;
+    // Üst satır: yalnızca ilk parça (kampüs / semt)
+    var ustParca = (kisa.split(",")[0] || yer.split(",")[0] || "Konum").trim();
+    if (markaUst) markaUst.textContent = ustParca + " · Şehir verisi";
     if (markaAlt) {
-      markaAlt.textContent = ad + " · " + yer +
-        (durum.binaId === "is-kuleleri" && !durum.yerAd ? " · OSM 3B" : " · sayısal model");
+      // Uzun Nominatim adresini başlığa yapıştırma — efsane ile üst üste binmesin
+      var alt = kisa;
+      if (durum.binaId === "is-kuleleri" && !durum.yerAd) alt += " · OSM 3B";
+      else if (durum.yerAd) alt += " · sayısal model";
+      else alt += " · " + (b.yer || "").split(",")[0];
+      markaAlt.textContent = alt;
+      markaAlt.title = yer || ad;
     }
-    if (panelBaslik) panelBaslik.textContent = ad + " · tüm camlar";
+    if (panelBaslik) panelBaslik.textContent = kisa + " · tüm camlar";
     if (konumAra && durum.yerAd) konumAra.value = durum.yerAd;
   }
 
