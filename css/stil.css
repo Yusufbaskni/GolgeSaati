@@ -794,6 +794,73 @@ body.derece-dusuk .derece-baslik strong {
   font-weight: 700;
 }
 
+.uretim-kutu {
+  margin: 0;
+  padding: 12px 14px;
+  border: 1px solid rgba(232, 180, 90, 0.4);
+  background: linear-gradient(145deg, rgba(58, 107, 72, 0.35), rgba(232, 180, 90, 0.1));
+  display: grid;
+  gap: 8px;
+}
+.uretim-baslik {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 8px;
+}
+.uretim-baslik span {
+  font-size: 10px;
+  font-weight: 800;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--gunes);
+}
+.uretim-baslik a {
+  font-size: 11px;
+  color: rgba(232, 180, 90, 0.85);
+  text-decoration: none;
+  border-bottom: 1px solid rgba(232, 180, 90, 0.35);
+}
+.uretim-anlik {
+  font-family: var(--yazi);
+  font-size: 32px;
+  letter-spacing: -0.03em;
+  color: #e8d4a0;
+  line-height: 1;
+}
+.uretim-anlik.aktif {
+  color: #9ed4a8;
+  text-shadow: 0 0 18px rgba(158, 212, 168, 0.35);
+}
+.uretim-anlik-not {
+  margin: 0;
+  font-size: 11px;
+  color: var(--soluk);
+}
+.uretim-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 8px;
+}
+.uretim-grid span {
+  display: block;
+  font-size: 10px;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--soluk);
+}
+.uretim-grid strong {
+  display: block;
+  margin-top: 2px;
+  font-family: var(--yazi);
+  font-size: 18px;
+  color: #f4efe6;
+}
+.uretim-kutu .dipnot {
+  margin: 0 !important;
+  font-size: 10px !important;
+}
+
 .net-kutu {
   margin: 0;
   padding: 12px 14px;

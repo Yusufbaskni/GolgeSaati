@@ -165,8 +165,19 @@
     // Sıçrama: kazanımın bir kısmı konfor/setpoint ile geri alınır (varsayılan %5)
     var sicramaOran = opts.sicramaOran != null ? opts.sicramaOran : 0.05;
     var sicramaKwh = brutKwh * sicramaOran;
-    var netKwh = Math.max(0, brutKwh - aracKwh - motorKwh - sicramaKwh);
-    var netCo2 = netKwh * katsayi;
+    // Solar Curtain üretim (solarcurtain.co: 120 W/m², ~0,8 kWh/gün @ 4 m²)
+    var uretim = solarUretim({
+      daire: daire,
+      perdeM2: opts.perdeM2,
+      bulut: opts.bulut != null ? opts.bulut : ayar.bulut,
+      normal: normal,
+      pencere: opts.pencere != null ? opts.pencere : ayar.pencere,
+      katsayi: katsayi,
+      fiyat: fiyat
+    });
+
+    var netKwh = Math.max(0, brutKwh - aracKwh - motorKwh - sicramaKwh) + uretim.yilKwh;
+    var netCo2 = (Math.max(0, brutKwh - aracKwh - motorKwh - sicramaKwh) + uretim.yilKwh) * katsayi;
     var netTl = netKwh * fiyat;
 
     return {
@@ -181,10 +192,62 @@
       motorKwh: motorKwh,
       sicramaOran: sicramaOran,
       sicramaKwh: sicramaKwh,
+      uretim: uretim,
+      uretimYilKwh: uretim.yilKwh,
+      uretimYilTl: uretim.yilTl,
+      uretimYilCo2: uretim.yilCo2,
       netKwh: netKwh,
       netCo2: netCo2,
       netTl: netTl,
       geriOdemeYil: null
+    };
+  }
+
+  /**
+   * Solar Curtain üretim modeli — solarcurtain.co verisine dayalı.
+   * 120 W/m² kurulu güç · 4 m² güney cephe ≈ 0,8 kWh/gün uzun dönem ortalama.
+   */
+  function solarUretim(opts) {
+    opts = opts || {};
+    var daire = opts.daire != null ? opts.daire : 5;
+    var pencere = opts.pencere != null ? opts.pencere : 1.5;
+    // Tipik pencere eni ~1,4 m → alan ≈ yükseklik × 1,4; min 1,8 m²/daire
+    var m2Birim = opts.perdeM2 != null ? opts.perdeM2 : Math.max(1.8, pencere * 1.4);
+    var alan = daire * m2Birim;
+    var wattM2 = 120;
+    var bulut = opts.bulut != null ? opts.bulut : 0.15;
+    var normal = opts.normal != null ? opts.normal : 180;
+    // Güney (180°) 1.0 · doğu/batı ~0.75 · kuzey ~0.4
+    var guney = Math.cos((normal - 180) * Math.PI / 180);
+    var yonCarpan = Math.max(0.4, 0.7 + guney * 0.3);
+    // 0,8 kWh / 4 m² = 0,2 kWh/m²/gün (solarcurtain.co)
+    var gunlukKwhM2 = 0.2 * yonCarpan * (1 - Math.min(0.55, bulut) * 0.65);
+    var gunlukKwh = alan * gunlukKwhM2;
+    var yilKwh = gunlukKwh * 365 * 0.9;
+    var katsayi = opts.katsayi != null ? opts.katsayi : 0.4;
+    var fiyat = opts.fiyat != null ? opts.fiyat : 3.5;
+
+    var anlikW = 0;
+    if (opts.perdeInik && opts.gunes && opts.gunes.yukseklik > 4) {
+      var yuk = Math.min(1, opts.gunes.yukseklik / 50);
+      var gama = (opts.gunes.azimut - normal) * Math.PI / 180;
+      var onde = Math.cos(gama) > 0.05;
+      if (onde) {
+        anlikW = alan * wattM2 * yuk * yonCarpan * (1 - Math.min(0.5, bulut));
+      }
+    }
+
+    return {
+      alanM2: Math.round(alan * 10) / 10,
+      m2Birim: Math.round(m2Birim * 10) / 10,
+      wattM2: wattM2,
+      yonCarpan: yonCarpan,
+      gunlukKwh: gunlukKwh,
+      yilKwh: yilKwh,
+      yilTl: yilKwh * fiyat,
+      yilCo2: yilKwh * katsayi,
+      anlikW: anlikW,
+      kaynak: "solarcurtain.co · 120 W/m² · ~0,8 kWh/gün @ 4 m²"
     };
   }
 
@@ -201,6 +264,7 @@
     aralikYazi: aralikYazi,
     saatYazi: saatYazi,
     gunlukSaat: gunlukSaat,
-    yillikEtki: yillikEtki
+    yillikEtki: yillikEtki,
+    solarUretim: solarUretim
   };
 })(typeof globalThis !== "undefined" ? globalThis : this);

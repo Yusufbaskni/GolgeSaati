@@ -47,6 +47,13 @@
   var rakamKaynak = document.getElementById("rakamKaynak");
   var netEtkiEl = document.getElementById("netEtki");
   var netEtkiBuyuk = document.getElementById("netEtkiBuyuk");
+  var uretimAnlik = document.getElementById("uretimAnlik");
+  var uretimAnlikNot = document.getElementById("uretimAnlikNot");
+  var uretimGun = document.getElementById("uretimGun");
+  var uretimYil = document.getElementById("uretimYil");
+  var uretimAlan = document.getElementById("uretimAlan");
+  var uretimTl = document.getElementById("uretimTl");
+  var uretimKaynak = document.getElementById("uretimKaynak");
   var karbon = document.getElementById("karbon");
   var maliyetYazi = document.getElementById("maliyetYazi");
   var konumYazi = document.getElementById("konumYazi");
@@ -279,6 +286,10 @@
       netKwh: yil.netKwh,
       netCo2: yil.netCo2,
       netTl: yil.netTl,
+      uretimYilKwh: yil.uretimYilKwh,
+      uretimYilTl: yil.uretimYilTl,
+      uretimYilCo2: yil.uretimYilCo2,
+      uretimAlan: yil.uretim ? yil.uretim.alanM2 : null,
       geriOdeme: geri,
       aylik: yil.aylik
     };
@@ -700,7 +711,19 @@
       daire: durum.daire,
       katsayi: durum.katsayi,
       fiyat: durum.fiyat,
-      shgc: durum.shgc
+      shgc: durum.shgc,
+      bulut: durum.bulut,
+      pencere: durum.pencere
+    });
+    var uretimAnlikHesap = G.solarUretim({
+      daire: durum.daire,
+      pencere: durum.pencere,
+      bulut: durum.bulut,
+      normal: durum.normal,
+      katsayi: durum.katsayi,
+      fiyat: durum.fiyat,
+      perdeInik: durum.sacakVar,
+      gunes: gunes
     });
     var rapor = raporKur(fark, yil);
     karsilastirCiz();
@@ -713,8 +736,37 @@
     if (sacakEtiketSayi) sacakEtiketSayi.textContent = "Solar Curtain";
     if (yilEtiket) yilEtiket.textContent = "~" + yil.sicakGun + " sıcak gün";
     karbon.textContent =
-      "Brüt " + Math.round(yil.yilCo2).toLocaleString("tr-TR") + " kg CO₂ / yıl  ·  " +
-      Math.round(yil.yilTl).toLocaleString("tr-TR") + " TL / yıl";
+      "Klima brüt " + Math.round(yil.yilCo2).toLocaleString("tr-TR") + " kg CO₂  ·  " +
+      "üretim " + Math.round(yil.uretimYilCo2 || 0).toLocaleString("tr-TR") + " kg CO₂ kaçınır";
+    if (uretimAnlik) {
+      uretimAnlik.textContent = durum.sacakVar
+        ? (Math.round(uretimAnlikHesap.anlikW) + " W")
+        : "0 W";
+      uretimAnlik.classList.toggle("aktif", durum.sacakVar && uretimAnlikHesap.anlikW > 5);
+    }
+    if (uretimAnlikNot) {
+      uretimAnlikNot.textContent = durum.sacakVar
+        ? (uretimAnlikHesap.anlikW > 5
+          ? "Perde inik · güneş cephede · üretim var"
+          : "Perde inik · şu an düşük ışınım")
+        : "Perdeyi indir → üretim başlar";
+    }
+    if (uretimGun) {
+      uretimGun.textContent = uretimAnlikHesap.gunlukKwh.toFixed(1).replace(".", ",") + " kWh";
+    }
+    if (uretimYil) {
+      uretimYil.textContent = Math.round(uretimAnlikHesap.yilKwh).toLocaleString("tr-TR") + " kWh";
+    }
+    if (uretimAlan) {
+      uretimAlan.textContent = String(uretimAnlikHesap.alanM2).replace(".", ",") + " m²";
+    }
+    if (uretimTl) {
+      uretimTl.textContent = Math.round(uretimAnlikHesap.yilTl).toLocaleString("tr-TR") + " TL";
+    }
+    if (uretimKaynak) {
+      uretimKaynak.textContent = uretimAnlikHesap.kaynak +
+        " · " + uretimAnlikHesap.m2Birim + " m²/daire × " + durum.daire + " daire";
+    }
     if (netEtkiBuyuk) {
       netEtkiBuyuk.textContent =
         Math.round(yil.netKwh).toLocaleString("tr-TR") + " kWh  ·  " +
@@ -722,9 +774,8 @@
     }
     if (netEtkiEl) {
       netEtkiEl.textContent =
-        "Brüt " + Math.round(yil.yilKwh).toLocaleString("tr-TR") +
-        " − ayak izi " + Math.round(yil.aracKwh + yil.motorKwh) +
-        " − sıçrama " + Math.round(yil.sicramaKwh) +
+        "Klima net " + Math.round(Math.max(0, yil.brutKwh - yil.aracKwh - yil.motorKwh - yil.sicramaKwh)).toLocaleString("tr-TR") +
+        " + üretim " + Math.round(yil.uretimYilKwh || 0).toLocaleString("tr-TR") +
         "  ·  ~" + Math.round(yil.netTl).toLocaleString("tr-TR") + " TL / yıl";
     }
     if (maliyetYazi) {

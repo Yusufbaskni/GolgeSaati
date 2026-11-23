@@ -178,6 +178,9 @@
       csvSatir(["Net yıllık kWh", Math.round(rapor.netKwh != null ? rapor.netKwh : rapor.yilKwh * 0.95)]),
       csvSatir(["Net yıllık CO2 kg", Math.round(rapor.netCo2 != null ? rapor.netCo2 : rapor.yilCo2 * 0.95)]),
       csvSatir(["Net yıllık TL", Math.round(rapor.netTl != null ? rapor.netTl : rapor.yilTl * 0.95)]),
+      csvSatir(["Solar Curtain üretim kWh/yıl", Math.round(rapor.uretimYilKwh || 0)]),
+      csvSatir(["Solar Curtain üretim TL/yıl", Math.round(rapor.uretimYilTl || 0)]),
+      csvSatir(["Solar Curtain alan m2", rapor.uretimAlan != null ? rapor.uretimAlan : ""]),
       csvSatir(["Geri ödeme yıl", rapor.geriOdeme]),
       csvSatir([]),
       csvSatir(["Ay", "Çıplak sa", "Perde inik sa", "Fark sa", "Efektif gün", "kWh"])
