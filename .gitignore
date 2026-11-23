@@ -1,0 +1,11 @@
+.DS_Store
+*.app/
+node_modules/
+.env
+.env.*
+*.log
+.cursor/
+dist/
+build/
+*.swp
+*~

@@ -1,0 +1,359 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Gölge Saati</title>
+  <link rel="stylesheet" href="css/stil.css">
+</head>
+<body>
+  <div class="sahne-kok" id="sahneKok" aria-label="Üç boyutlu sahne"></div>
+
+  <div class="sis sis-ust"></div>
+  <div class="sis sis-alt"></div>
+
+  <header class="marka">
+    <p class="ust" id="markaUst">İstanbul · Şehir verisi</p>
+    <h1>Gölge Saati</h1>
+    <p class="marka-alt" id="markaAlt">İş Kuleleri · Levent · OSM tabanlı 3B</p>
+  </header>
+
+  <nav class="ust-nav">
+    <button type="button" class="nav-demo" id="btnDemo">Jüri demosu</button>
+    <a href="etki.html">Etki</a>
+    <a href="sunum.html">Sunum</a>
+  </nav>
+
+  <div class="demo-perde" id="demoPerde" hidden>
+    <p class="demo-adim" id="demoAdim">Gölge Saati</p>
+    <button type="button" class="ikincil" id="btnDemoDur">Durdur</button>
+  </div>
+
+  <div class="hud-gunes" id="konumYazi">Güneş</div>
+  <div class="hud-durum" id="durumYazi">Çıplak cam</div>
+  <div class="hud-yon" id="hudYon"><span>Cam yönü</span><strong id="hudYonYazi">—</strong></div>
+
+  <div class="legend">
+    <span class="leg leg-soguk">Gölgede</span>
+    <span class="leg leg-ilik">Kısmi</span>
+    <span class="leg leg-sicak">Doğrudan güneş</span>
+  </div>
+
+  <aside class="panel" aria-label="Kontroller">
+    <p class="panel-ust">Cephe deneyi</p>
+    <p class="panel-baslik" id="panelBaslik">Tüm cephe camları</p>
+    <p class="panel-ozet" id="cumle"></p>
+
+    <label class="alan">
+      <span>Bina / senaryo</span>
+      <select id="binaSec"></select>
+    </label>
+
+    <div class="konum-arama">
+      <label class="alan">
+        <span>Gerçek konum (adres / yer)</span>
+        <input id="konumAra" type="search" placeholder="örn. Bağdat Cad. Kadıköy" autocomplete="street-address">
+      </label>
+      <div class="eylemler konum-eylem">
+        <button type="button" class="ikincil" id="btnKonumAra">Ara</button>
+        <button type="button" class="ikincil" id="btnKonumGps">Konumum</button>
+      </div>
+      <ul class="konum-sonuc" id="konumSonuc" hidden></ul>
+      <p class="dipnot" id="konumDurum">OpenStreetMap ile adres aranır · enlem/boylam güncellenir</p>
+      <div class="hava" id="havaKutu">
+        <button type="button" class="ikincil" id="btnHava">Bugünün havasını al</button>
+        <p class="dipnot" id="havaDurum">Open-Meteo · bulut katsayısı güncellenir</p>
+      </div>
+      <details class="katman harita-katman">
+        <summary>Haritadan konum / cephe</summary>
+        <div id="harita" class="harita" role="application" aria-label="Konum haritası"></div>
+        <div class="eylemler">
+          <button type="button" class="ikincil" id="btnHaritaCephe">OSM cephe yönü</button>
+        </div>
+        <p class="dipnot" id="haritaNot">Haritaya tıkla · konum seç. OSM cephe: yakındaki bina kenarından yön tahmin eder.</p>
+      </details>
+    </div>
+
+    <div class="pusula-kutu" aria-label="Cam yönü pusulası">
+      <div class="pusula-baslik">
+        <span>Cam bakıyor</span>
+        <strong id="yonYazi">Güneybatı · 238°</strong>
+      </div>
+      <div class="pusula" id="pusula" role="slider" tabindex="0" aria-valuemin="0" aria-valuemax="359" aria-valuenow="238" aria-label="Cephe yönü">
+        <div class="pusula-halka">
+          <span class="pusula-kuzey">K</span>
+          <span class="pusula-dogu">D</span>
+          <span class="pusula-guney">G</span>
+          <span class="pusula-bati">B</span>
+          <div class="pusula-gunes" id="pusulaGunes" title="Güneş azimutu"></div>
+          <div class="pusula-ok" id="pusulaOk"></div>
+          <div class="pusula-merkez"></div>
+        </div>
+      </div>
+      <div class="pusula-yonler" id="pusulaYonler" role="group" aria-label="Hızlı yön">
+        <button type="button" data-yon="0">K</button>
+        <button type="button" data-yon="45">KD</button>
+        <button type="button" data-yon="90">D</button>
+        <button type="button" data-yon="135">GD</button>
+        <button type="button" data-yon="180">G</button>
+        <button type="button" data-yon="225">GB</button>
+        <button type="button" data-yon="270">B</button>
+        <button type="button" data-yon="315">KB</button>
+      </div>
+      <button type="button" class="ikincil" id="btnCihazPusula">Telefon / cihaz pusulası</button>
+      <p class="dipnot" id="pusulaNot">Ok camın baktığı yön · sarı nokta güneş. Çevir veya yön seç.</p>
+    </div>
+
+    <div class="aylar" id="aylar" role="group" aria-label="Ay"></div>
+
+    <label class="saat-satir">
+      <span>Saat</span>
+      <strong id="saatYazi">14.30</strong>
+    </label>
+    <input id="saat" type="range" min="6" max="20" step="0.25" value="14.5">
+    <div class="serit-gun" id="seritGun" aria-label="Günün sıcak saatleri"></div>
+
+    <div class="program" id="sacakProgram" aria-live="polite">
+      <p class="program-ust">Saçak açma zamanları</p>
+      <p class="program-durum" id="programDurum">—</p>
+      <ul class="program-liste" id="programListe"></ul>
+      <p class="program-sonraki" id="programSonraki"></p>
+    </div>
+
+    <button type="button" class="sacak-dugme" id="sacak" aria-pressed="false">
+      <span class="sacak-etiket">Saçağı uygula</span>
+      <span class="sacak-ipucu">Klima saatini geciktir</span>
+    </button>
+
+    <div class="derece" aria-live="polite">
+      <div class="derece-baslik">
+        <span>Cam yüzeyi</span>
+        <strong id="dereceYazi">—</strong>
+      </div>
+      <div class="derece-cubuk" aria-hidden="true">
+        <div class="derece-dolgu" id="dereceDolgu"></div>
+        <div class="derece-isaret" id="dereceIsaret"></div>
+      </div>
+      <div class="derece-olcek">
+        <span id="dereceMin">hava</span>
+        <span id="dereceMid">+</span>
+        <span id="dereceMax">güneş</span>
+      </div>
+      <p class="dipnot" id="dereceNot">Cam sıcaklığı dış havaya + güneş payına bağlıdır.</p>
+      <div class="derece-karsilastir">
+        <div>
+          <span>Çıplak</span>
+          <strong id="dereceCiplak">—</strong>
+        </div>
+        <div>
+          <span>Saçak</span>
+          <strong id="dereceSacak">—</strong>
+        </div>
+        <div class="derece-fark">
+          <span>Fark</span>
+          <strong id="dereceFark">—</strong>
+        </div>
+      </div>
+    </div>
+
+    <div class="sayilar">
+      <div>
+        <span>Çıplak cam</span>
+        <strong id="ciplakSaat"></strong>
+      </div>
+      <div>
+        <span id="sacakEtiketSayi">Saçak</span>
+        <strong id="sacakSaat"></strong>
+      </div>
+      <div class="vurgu">
+        <span>Fark, bir gün</span>
+        <strong id="farkSaat"></strong>
+      </div>
+      <div class="vurgu">
+        <span id="yilEtiket">Yıllık</span>
+        <strong id="yilKwh"></strong>
+      </div>
+    </div>
+    <p class="karbon" id="karbon"></p>
+    <p class="maliyet" id="maliyetYazi"></p>
+    <p class="kis-uyari" id="kisUyari" hidden></p>
+
+    <div class="karsilastir" id="sacakKarsilastir">
+      <p class="program-ust">Saçak seçenekleri</p>
+      <table class="karsilastir-tablo" id="karsilastirTablo">
+        <thead>
+          <tr><th>Saçak</th><th>Gün</th><th>Yıl kWh</th><th>Yıl TL</th><th></th></tr>
+        </thead>
+        <tbody></tbody>
+      </table>
+    </div>
+
+    <details class="katman" open>
+      <summary>Parametreler</summary>
+      <div class="alan-grid">
+        <label class="alan">
+          <span>Cam tipi (SHGC)</span>
+          <select id="pCam"></select>
+        </label>
+        <label class="alan">
+          <span>Saçak ek (cm)</span>
+          <input id="pEk" type="number" min="10" max="200" step="5" value="60">
+        </label>
+        <label class="alan">
+          <span>Mevcut saçak (cm)</span>
+          <input id="pSacak" type="number" min="0" max="150" step="5" value="5">
+        </label>
+        <label class="alan">
+          <span>Pencere yüksekliği (m)</span>
+          <input id="pPencere" type="number" min="0.8" max="3" step="0.1" value="1.5">
+        </label>
+        <label class="alan">
+          <span>Cephe azimut (° · 0=K)</span>
+          <input id="pNormal" type="number" min="0" max="359" step="1" value="238">
+        </label>
+        <label class="alan">
+          <span>Daire / ofis</span>
+          <input id="pDaire" type="number" min="1" max="200" step="1" value="40">
+        </label>
+        <label class="alan">
+          <span>Klima (kW)</span>
+          <input id="pGuc" type="number" min="0.4" max="5" step="0.1" value="1.2">
+        </label>
+        <label class="alan">
+          <span>Enlem</span>
+          <input id="pLat" type="number" min="-90" max="90" step="0.0001" value="41.0815">
+        </label>
+        <label class="alan">
+          <span>Boylam</span>
+          <input id="pLon" type="number" min="-180" max="180" step="0.0001" value="29.0114">
+        </label>
+      </div>
+    </details>
+
+    <details class="katman">
+      <summary>Komşu gölge · iklim · kalibrasyon</summary>
+      <div class="alan-grid">
+        <label class="alan">
+          <span>Engel ufku (°)</span>
+          <input id="pEngel" type="number" min="0" max="45" step="1" value="8">
+        </label>
+        <label class="alan">
+          <span>Bulut / kayıp</span>
+          <input id="pBulut" type="number" min="0" max="0.5" step="0.05" value="0.12">
+        </label>
+        <label class="alan">
+          <span>Kalibrasyon (sa/gün)</span>
+          <input id="pKalib" type="number" min="-3" max="3" step="0.1" value="0">
+        </label>
+        <label class="alan">
+          <span>Ölçülen sıcak sa (opsiyonel)</span>
+          <input id="pOlculen" type="number" min="0" max="14" step="0.1" value="" placeholder="boş = yok">
+        </label>
+        <label class="alan">
+          <span>TL / kWh</span>
+          <input id="pFiyat" type="number" min="0.5" max="20" step="0.1" value="3.5">
+        </label>
+        <label class="alan">
+          <span>Yatırım (TL)</span>
+          <input id="pMaliyet" type="number" min="0" max="500000" step="500" value="18000">
+        </label>
+        <label class="alan">
+          <span>CO₂ kg/kWh</span>
+          <input id="pKatsayi" type="number" min="0.1" max="1" step="0.05" value="0.4">
+        </label>
+      </div>
+      <p class="dipnot" id="kalibNot">Engel ufku: komşu bina güneşi bu açıdan aşağıdayken keser. Ölçülen saat girilirse kalibrasyon otomatik ayarlanır.</p>
+    </details>
+
+    <details class="katman">
+      <summary>Kaydet · paylaş · rapor · takvim</summary>
+      <div class="eylemler">
+        <input id="senaryoAd" type="text" placeholder="Senaryo adı" maxlength="40">
+        <button type="button" class="ikincil" id="btnKaydet">Kaydet</button>
+        <button type="button" class="ikincil" id="btnPaylas">Bağlantı kopyala</button>
+        <button type="button" class="ikincil" id="btnCsv">CSV</button>
+        <button type="button" class="ikincil" id="btnPdf">PDF / yazdır</button>
+        <button type="button" class="ikincil" id="btnIcal">Takvime ekle (.ics)</button>
+      </div>
+      <label class="alan">
+        <span>Kayıtlı senaryolar</span>
+        <select id="senaryoListe"></select>
+      </label>
+      <div class="eylemler">
+        <button type="button" class="ikincil" id="btnYukle">Yükle</button>
+        <button type="button" class="ikincil" id="btnSil">Sil</button>
+      </div>
+      <p class="dipnot" id="paylasNot"></p>
+    </details>
+
+    <details class="katman" open>
+      <summary>Wi‑Fi saçak</summary>
+      <p class="ble-durum" id="wifiDurum">Adres yok</p>
+      <label class="alan">
+        <span>Cihaz adresi (IP veya http://…)</span>
+        <input id="pWifiUrl" type="text" placeholder="192.168.1.50 veya http://sacak.local" autocomplete="off">
+      </label>
+      <div class="eylemler">
+        <button type="button" class="ikincil" id="btnWifiTest">Bağlantıyı dene</button>
+        <button type="button" class="ikincil" id="btnWifiAc">Wi‑Fi AÇ</button>
+        <button type="button" class="ikincil" id="btnWifiKapat">Wi‑Fi KAPAT</button>
+      </div>
+      <label class="alan checkbox">
+        <input id="wifiOtomatik" type="checkbox" checked>
+        <span>Program saçağı Wi‑Fi ile otomatik sür</span>
+      </label>
+      <p class="dipnot" id="wifiNot">POST /sacak/open · /sacak/close · GET /sacak/status (yedek: /open /close). ESP32 aynı Wi‑Fi ağında olmalı.</p>
+    </details>
+
+    <details class="katman">
+      <summary>Bluetooth saçak</summary>
+      <p class="ble-durum" id="bleDurum">Bağlı değil</p>
+      <div class="eylemler">
+        <button type="button" class="ikincil" id="btnBleBaglan">Saçağa bağlan</button>
+        <button type="button" class="ikincil" id="btnBleKopar">Kopar</button>
+        <button type="button" class="ikincil" id="btnBleAc">BLE AÇ</button>
+        <button type="button" class="ikincil" id="btnBleKapat">BLE KAPAT</button>
+      </div>
+      <label class="alan checkbox">
+        <input id="bleOtomatik" type="checkbox" checked>
+        <span>Program saçağı Bluetooth ile otomatik sür</span>
+      </label>
+      <p class="dipnot" id="bleNot">Cihaz adı: GolgeSaati / Saçak · Nordic UART (NUS). Komut: OPEN / CLOSE. Donanım yoksa sanal saçak ile demo.</p>
+    </details>
+
+    <details class="katman">
+      <summary>Otomasyon (webhook / MQTT)</summary>
+      <label class="alan">
+        <span>Webhook URL</span>
+        <input id="pWebhook" type="url" placeholder="https://…/hook">
+      </label>
+      <label class="alan">
+        <span>MQTT konu (bilgi)</span>
+        <input id="pMqtt" type="text" value="golge-saati/sacak" readonly>
+      </label>
+      <div class="eylemler">
+        <button type="button" class="ikincil" id="btnOtoAc">AÇ sinyali</button>
+        <button type="button" class="ikincil" id="btnOtoKapat">KAPAT sinyali</button>
+        <button type="button" class="ikincil" id="btnOtoKopya">JSON kopyala</button>
+      </div>
+      <p class="dipnot" id="otoNot">Panjur/saçak köprüsüne POST JSON. MQTT: golge-saati/sacak/open|close</p>
+    </details>
+
+    <p class="dipnot" id="dipnot">Yıllık hesap, İstanbul iklim ağırlıklı sıcak gün takvimine göredir. 3B sahne İş Kuleleri referansıdır; diğer senaryolarda sayısal model geçerlidir.</p>
+  </aside>
+
+  <p class="ipuclari">Sürükle · döndür · tekerlek ile yakınlaş</p>
+
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+  <script src="vendor/three.min.js"></script>
+  <script src="vendor/OrbitControls.js"></script>
+  <script src="js/gunes.js?v=13"></script>
+  <script src="js/senaryolar.js?v=13"></script>
+  <script src="js/ekler.js?v=13"></script>
+  <script src="js/bluetooth.js?v=13"></script>
+  <script src="js/wifi.js?v=13"></script>
+  <script src="js/bina.js?v=13"></script>
+  <script src="js/uygulama.js?v=13"></script>
+</body>
+</html>

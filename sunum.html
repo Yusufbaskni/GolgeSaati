@@ -1,0 +1,361 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="color-scheme" content="dark">
+  <title>Gölge Saati · Sunum</title>
+  <link rel="stylesheet" href="css/sunum.css">
+</head>
+<body class="mod-acilis">
+  <canvas id="sahneCanvas" aria-hidden="true"></canvas>
+  <div class="grain" aria-hidden="true"></div>
+  <div class="vignette" aria-hidden="true"></div>
+
+  <p class="marka-kose">İstanbul · Şehir verisi</p>
+  <div class="serit" id="serit" style="--slayt-sayisi: 8"></div>
+
+  <section class="slayt aktif" data-mod="acilis">
+    <p class="no reveal">1 / 8 · Açılış</p>
+    <p class="eyebrow reveal reveal-d1">İş Kuleleri · Levent · OpenStreetMap</p>
+    <h1 class="hero-marka reveal reveal-d2">Gölge<br>Saati</h1>
+    <p class="lead reveal reveal-d3">Güneş cama vurunca oda ısınır. Klima o zaman açılır. Bu araç klimayı açmaz — <span class="vurgu">camı gölgeler.</span></p>
+  </section>
+
+  <section class="slayt" data-mod="gece">
+    <p class="no reveal">2 / 8 · Problem</p>
+    <h1 class="reveal reveal-d1">Kızaran cam, batı cephesindedir.</h1>
+    <p class="lead reveal reveal-d2">Öğleden sonra güneş alçalır. Saçağın altından içeri süzülür. Saat 14.30’da cam kızarır; klima tetiklenir.</p>
+  </section>
+
+  <section class="slayt" data-mod="acilis">
+    <p class="no reveal">3 / 8 · Yaklaşım</p>
+    <h1 class="reveal reveal-d1">Herkes aynı cepheye bakar.</h1>
+    <p class="lead reveal reveal-d2">Girdi: yön, güneş açısı, saçak derinliği. Kişinin kliması kaydedilmez. Şehir verisi, bireysel iz sürmez.</p>
+    <div class="adimlar reveal reveal-d3">
+      <div class="adim"><b>01</b><p>OpenStreetMap’ten gerçek bina kütlesi</p></div>
+      <div class="adim"><b>02</b><p>İstanbul enleminde güneş yüksekliği + azimut</p></div>
+      <div class="adim"><b>03</b><p>60 cm saçak → gölge payı → klima saati</p></div>
+    </div>
+  </section>
+
+  <section class="slayt" data-mod="demo">
+    <p class="no reveal">4 / 8 · Keşif</p>
+    <h1 class="reveal reveal-d1">Üçüncü sütunun saçağı yok.</h1>
+    <p class="lead reveal reveal-d2">Yan sütunlarda 80 cm balkon var. Güneş onları keser. Üçüncü sütun açıkta kalır — deney burada başlar.</p>
+    <div class="karsilastir reveal reveal-d3">
+      <div class="kutu soguk"><em>Yan sütun</em><strong>80 cm</strong></div>
+      <div class="vs">→</div>
+      <div class="kutu sicak"><em>Hedef sütun</em><strong>5 cm</strong></div>
+    </div>
+  </section>
+
+  <section class="slayt" data-mod="acilis">
+    <p class="no reveal">5 / 8 · Neden dijital</p>
+    <h1 class="reveal reveal-d1">Kızaran cam aya göre yer değiştirir.</h1>
+    <p class="lead reveal reveal-d2">Haziranın saati, ağustosun saati değildir. Statik afiş bu pencereyi seçemez. Dijital araç, güneşi saate kilitler.</p>
+  </section>
+
+  <section class="slayt" data-mod="etki">
+    <p class="no reveal">6 / 8 · Etki</p>
+    <h1 class="reveal reveal-d1">Saat kısalır. kWh düşer.</h1>
+    <p class="lead reveal reveal-d2">Ağustos örneği · 1,2 kW × 5 daire × 50 sıcak gün</p>
+    <div class="rakamlar reveal reveal-d3">
+      <div class="rakam"><strong data-count="3.3" data-suffix=" sa">0</strong><span>Günlük fark</span></div>
+      <div class="rakam"><strong data-count="1000" data-suffix=" kWh">0</strong><span>50 sıcak gün</span></div>
+      <div class="rakam"><strong data-count="400" data-suffix=" kg">0</strong><span>CO₂ / yıl</span></div>
+    </div>
+  </section>
+
+  <section class="slayt" data-mod="acilis">
+    <p class="no reveal">7 / 8 · Dürüstlük</p>
+    <h1 class="reveal reveal-d1">Örnek cephe. Şişirilmedi.</h1>
+    <p class="lead reveal reveal-d2">Kadıköy’de ölçülmüş bir bina değildir. Şebeke ~0,4 kg CO₂/kWh. Varsayımlar ekranda. Net etki pozitif kalır.</p>
+  </section>
+
+  <section class="slayt" data-mod="demo">
+    <p class="no reveal">8 / 8 · Demo</p>
+    <h1 class="reveal reveal-d1">Saati 14.30’a getirin.</h1>
+    <p class="lead reveal reveal-d2">Üçüncü sütun kızarır. Saçağı uygulayın — cam soğur, gölge uzar, derece düşer.</p>
+    <a class="cta reveal reveal-d3" href="index.html">Uygulamayı aç <span>→</span></a>
+  </section>
+
+  <div class="kontroller">
+    <button type="button" id="onceki">Önceki</button>
+    <button type="button" id="sonraki">Sonraki</button>
+    <span id="sayac">1 / 8</span>
+    <span class="ipucu-klavye">← → boşluk</span>
+    <a href="index.html">Uygulama</a>
+  </div>
+
+  <script>
+    (function () {
+      var canvas = document.getElementById("sahneCanvas");
+      var ctx = canvas.getContext("2d", { alpha: false, desynchronized: true });
+      var dpr = 1;
+      var w = 0, h = 0;
+      var t0 = performance.now();
+      var mod = "acilis";
+      var gunesHedef = { x: 0.78, y: 0.18, r: 0.22, a: 0.9 };
+      var gunesAnlik = { x: 0.78, y: 0.18, r: 0.22, a: 0.9 };
+      var etki = 0;
+      var etkiHedef = 0;
+      var raf = 0;
+
+      var MODLAR = {
+        acilis: { x: 0.78, y: 0.16, r: 0.24, a: 0.92 },
+        gece:   { x: 0.72, y: 0.62, r: 0.12, a: 0.28 },
+        demo:   { x: 0.8,  y: 0.2,  r: 0.26, a: 1.0 },
+        etki:   { x: 0.7,  y: 0.12, r: 0.18, a: 0.22 }
+      };
+
+      function boyutla() {
+        dpr = Math.min(Math.max(window.devicePixelRatio || 1, 1), 3);
+        w = window.innerWidth;
+        h = window.innerHeight;
+        canvas.width = Math.round(w * dpr);
+        canvas.height = Math.round(h * dpr);
+        canvas.style.width = w + "px";
+        canvas.style.height = h + "px";
+        ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+      }
+
+      function lerp(a, b, t) { return a + (b - a) * t; }
+
+      function cizGokyuzu() {
+        var g = ctx.createLinearGradient(0, 0, 0, h);
+        if (etki > 0.5) {
+          g.addColorStop(0, "#f6f1e8");
+          g.addColorStop(0.45, "#e8dcc8");
+          g.addColorStop(1, "#d4c4ae");
+        } else {
+          g.addColorStop(0, "#1a2430");
+          g.addColorStop(0.5, "#121816");
+          g.addColorStop(1, "#0a0e0c");
+        }
+        ctx.fillStyle = g;
+        ctx.fillRect(0, 0, w, h);
+
+        var gx = gunesAnlik.x * w;
+        var gy = gunesAnlik.y * h;
+        var R = Math.min(w, h) * gunesAnlik.r;
+
+        var halo = ctx.createRadialGradient(gx, gy, R * 0.1, gx, gy, R * 3.2);
+        if (etki > 0.5) {
+          halo.addColorStop(0, "rgba(239,188,94," + (0.18 * gunesAnlik.a) + ")");
+          halo.addColorStop(0.45, "rgba(239,188,94,0.05)");
+          halo.addColorStop(1, "rgba(239,188,94,0)");
+        } else {
+          halo.addColorStop(0, "rgba(239,188,94," + (0.45 * gunesAnlik.a) + ")");
+          halo.addColorStop(0.35, "rgba(226,74,46," + (0.12 * gunesAnlik.a) + ")");
+          halo.addColorStop(1, "rgba(10,14,12,0)");
+        }
+        ctx.fillStyle = halo;
+        ctx.fillRect(0, 0, w, h);
+      }
+
+      function cizGunes(now) {
+        var gx = gunesAnlik.x * w;
+        var gy = gunesAnlik.y * h;
+        var pulse = 1 + Math.sin(now * 0.0012) * 0.025;
+        var R = Math.min(w, h) * gunesAnlik.r * pulse;
+        var a = gunesAnlik.a;
+
+        ctx.save();
+        ctx.globalAlpha = a;
+
+        var i, ang, len;
+        ctx.strokeStyle = "rgba(239,188,94,0.08)";
+        ctx.lineWidth = 1.25;
+        for (i = 0; i < 18; i++) {
+          ang = (i / 18) * Math.PI * 2 + now * 0.00008;
+          len = R * (2.4 + (i % 3) * 0.35);
+          ctx.beginPath();
+          ctx.moveTo(gx + Math.cos(ang) * R * 0.85, gy + Math.sin(ang) * R * 0.85);
+          ctx.lineTo(gx + Math.cos(ang) * len, gy + Math.sin(ang) * len);
+          ctx.stroke();
+        }
+
+        var glow = ctx.createRadialGradient(gx - R * 0.15, gy - R * 0.15, R * 0.05, gx, gy, R);
+        glow.addColorStop(0, "#fff8e8");
+        glow.addColorStop(0.25, "#ffe4a8");
+        glow.addColorStop(0.55, "#efbc5e");
+        glow.addColorStop(0.8, "rgba(226,74,46,0.45)");
+        glow.addColorStop(1, "rgba(226,74,46,0)");
+        ctx.fillStyle = glow;
+        ctx.beginPath();
+        ctx.arc(gx, gy, R, 0, Math.PI * 2);
+        ctx.fill();
+
+        var core = ctx.createRadialGradient(gx - R * 0.2, gy - R * 0.2, 0, gx, gy, R * 0.45);
+        core.addColorStop(0, "rgba(255,255,255,0.95)");
+        core.addColorStop(0.5, "rgba(255,243,208,0.55)");
+        core.addColorStop(1, "rgba(255,243,208,0)");
+        ctx.fillStyle = core;
+        ctx.beginPath();
+        ctx.arc(gx, gy, R * 0.45, 0, Math.PI * 2);
+        ctx.fill();
+        ctx.restore();
+      }
+
+      function cizZemin() {
+        var y0 = h * 0.62;
+        var g = ctx.createLinearGradient(0, y0, 0, h);
+        if (etki > 0.5) {
+          g.addColorStop(0, "rgba(246,241,232,0)");
+          g.addColorStop(0.35, "rgba(232,220,200,0.55)");
+          g.addColorStop(1, "#d4c4ae");
+        } else {
+          g.addColorStop(0, "rgba(10,14,12,0)");
+          g.addColorStop(0.35, "rgba(10,14,12,0.75)");
+          g.addColorStop(1, "#0a0e0c");
+        }
+        ctx.fillStyle = g;
+        ctx.fillRect(0, y0, w, h - y0);
+
+        ctx.save();
+        ctx.beginPath();
+        ctx.rect(0, y0, w, h - y0);
+        ctx.clip();
+        ctx.strokeStyle = etki > 0.5 ? "rgba(28,25,20,0.06)" : "rgba(246,241,232,0.035)";
+        ctx.lineWidth = 1;
+        var step = Math.max(36, w / 40);
+        var i, x;
+        for (i = -10; i < 50; i++) {
+          x = w * 0.5 + (i - 20) * step * 1.4;
+          ctx.beginPath();
+          ctx.moveTo(w * 0.5, y0 - 20);
+          ctx.lineTo(x, h + 40);
+          ctx.stroke();
+        }
+        var row;
+        for (row = 0; row < 12; row++) {
+          var yy = y0 + Math.pow(row / 12, 1.6) * (h - y0);
+          ctx.beginPath();
+          ctx.moveTo(0, yy);
+          ctx.lineTo(w, yy);
+          ctx.stroke();
+        }
+        ctx.restore();
+      }
+
+      function cizSis() {
+        var ust = ctx.createLinearGradient(0, 0, 0, h * 0.22);
+        ust.addColorStop(0, etki > 0.5 ? "rgba(246,241,232,0.35)" : "rgba(10,14,12,0.45)");
+        ust.addColorStop(1, "rgba(0,0,0,0)");
+        ctx.fillStyle = ust;
+        ctx.fillRect(0, 0, w, h * 0.22);
+
+        var alt = ctx.createLinearGradient(0, h * 0.72, 0, h);
+        alt.addColorStop(0, "rgba(0,0,0,0)");
+        alt.addColorStop(1, etki > 0.5 ? "rgba(212,196,174,0.55)" : "rgba(10,14,12,0.8)");
+        ctx.fillStyle = alt;
+        ctx.fillRect(0, h * 0.72, w, h * 0.28);
+      }
+
+      function kare(now) {
+        raf = requestAnimationFrame(kare);
+        var hedef = MODLAR[mod] || MODLAR.acilis;
+        gunesAnlik.x = lerp(gunesAnlik.x, hedef.x, 0.045);
+        gunesAnlik.y = lerp(gunesAnlik.y, hedef.y, 0.045);
+        gunesAnlik.r = lerp(gunesAnlik.r, hedef.r, 0.045);
+        gunesAnlik.a = lerp(gunesAnlik.a, hedef.a, 0.05);
+        etki = lerp(etki, etkiHedef, 0.05);
+
+        cizGokyuzu();
+        cizGunes(now);
+        cizZemin();
+        cizSis();
+      }
+
+      function setMod(m) {
+        mod = m || "acilis";
+        etkiHedef = mod === "etki" ? 1 : 0;
+        gunesHedef = MODLAR[mod] || MODLAR.acilis;
+      }
+
+      window.addEventListener("resize", function () {
+        boyutla();
+      });
+      boyutla();
+      raf = requestAnimationFrame(kare);
+
+      var slaytlar = Array.prototype.slice.call(document.querySelectorAll(".slayt"));
+      var serit = document.getElementById("serit");
+      var sayac = document.getElementById("sayac");
+      var sira = 0;
+
+      slaytlar.forEach(function () { serit.appendChild(document.createElement("i")); });
+      var cizgiler = serit.querySelectorAll("i");
+
+      function easeOut(t) { return 1 - Math.pow(1 - t, 3); }
+
+      function sayRakamlar(slayt) {
+        var nodes = slayt.querySelectorAll("[data-count]");
+        if (!nodes.length) return;
+        nodes.forEach(function (el) {
+          var hedef = Number(el.getAttribute("data-count"));
+          var suffix = el.getAttribute("data-suffix") || "";
+          var bas = performance.now();
+          var sure = 1200;
+          function tick(now) {
+            var t = Math.min(1, (now - bas) / sure);
+            var v = hedef * easeOut(t);
+            if (hedef % 1 !== 0) el.textContent = v.toFixed(1).replace(".", ",") + suffix;
+            else el.textContent = Math.round(v).toLocaleString("tr-TR") + suffix;
+            if (t < 1) requestAnimationFrame(tick);
+          }
+          requestAnimationFrame(tick);
+        });
+      }
+
+      function goster(n) {
+        sira = (n + slaytlar.length) % slaytlar.length;
+        var aktif = slaytlar[sira];
+        setMod(aktif.getAttribute("data-mod") || "acilis");
+        document.body.className = "mod-" + (aktif.getAttribute("data-mod") || "acilis");
+
+        slaytlar.forEach(function (el, i) {
+          el.classList.toggle("aktif", i === sira);
+        });
+        cizgiler.forEach(function (el, i) {
+          el.classList.toggle("dolu", i < sira);
+          el.classList.toggle("simdi", i === sira);
+        });
+        sayac.textContent = (sira + 1) + " / " + slaytlar.length;
+
+        if (aktif.querySelector("[data-count]")) {
+          aktif.querySelectorAll("[data-count]").forEach(function (el) { el.textContent = "0"; });
+          setTimeout(function () { sayRakamlar(aktif); }, 240);
+        }
+      }
+
+      document.getElementById("onceki").addEventListener("click", function () { goster(sira - 1); });
+      document.getElementById("sonraki").addEventListener("click", function () { goster(sira + 1); });
+      document.addEventListener("keydown", function (e) {
+        if (e.target.closest && e.target.closest("a, button, input")) return;
+        if (e.key === "ArrowRight" || e.key === " " || e.key === "PageDown") {
+          e.preventDefault();
+          goster(sira + 1);
+        }
+        if (e.key === "ArrowLeft" || e.key === "PageUp") {
+          e.preventDefault();
+          goster(sira - 1);
+        }
+      });
+
+      var dokunX = 0;
+      document.addEventListener("touchstart", function (e) {
+        dokunX = e.changedTouches[0].screenX;
+      }, { passive: true });
+      document.addEventListener("touchend", function (e) {
+        var dx = e.changedTouches[0].screenX - dokunX;
+        if (Math.abs(dx) < 50) return;
+        goster(sira + (dx < 0 ? 1 : -1));
+      }, { passive: true });
+
+      goster(0);
+    })();
+  </script>
+</body>
+</html>

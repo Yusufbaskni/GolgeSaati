@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Gölge Saati · Etki</title>
+  <link rel="stylesheet" href="css/stil.css">
+</head>
+<body class="kagit-sayfa">
+  <header class="tepe">
+    <div>
+      <p class="ust">Tek sayfa · Şehir verisi</p>
+      <h1>Etki hesabı</h1>
+    </div>
+    <nav>
+      <a href="index.html">Uygulama</a>
+      <a href="sunum.html">Sunum</a>
+    </nav>
+  </header>
+  <article class="sayfa">
+    <p>Kaynak: seçilen cephedeki birimlerde klimanın çalıştığı süre. Birim: kWh. Maliyet TL/kWh ile, karbon şebeke katsayısıyla yazılır.</p>
+    <h2>Formül</h2>
+    <p>Günlük fark = (çıplak güneşli saat − saçaklı güneşli saat) × (1 − bulut) + kalibrasyon.</p>
+    <p>Yıllık kWh = Σ (günlük fark × klima kW × daire × ayın efektif sıcak günü).</p>
+    <p>Efektif sıcak günler, ayın gün sayısı × iklim ağırlığıdır (haz–eyl yüksek, kış sıfıra yakın). Geri ödeme = yatırım TL ÷ yıllık TL tasarrufu.</p>
+    <h2>Gölge modeli</h2>
+    <p>Güneş yüksekliği ve azimutu seçilen enleme göredir. Cam, güneş cephe önündeyse ve saçak pencere yüksekliğinin yarısından azını örtüyorsa güneşli sayılır. Engel ufku, komşu binanın güneşi kestiği minimum yükseklik açısıdır.</p>
+    <h2>Uygulamada</h2>
+    <p>Bina senaryosu, saçak cm, pencere, cephe azimutu, daire, kW, enlem, engel, bulut, kalibrasyon, elektrik fiyatı ve yatırım tutarı düzenlenebilir. Ölçülen sıcak saat girilirse kalibrasyon otomatik ayarlanır. CSV ve PDF rapor, localStorage senaryoları ve paylaşım bağlantısı vardır.</p>
+    <h2>Varsayımlar</h2>
+    <p>3B sahne İş Kuleleri OSM referansıdır. Diğer senaryolar sayısal modeldir. Bulut katsayısı basitleştirilmiş kayıptır. Gerçek fatura doğrulaması için kalibrasyon alanını kullanın.</p>
+  </article>
+</body>
+</html>
