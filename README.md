@@ -2,7 +2,17 @@
 
 İstanbul’da batıya bakan bir cephede, güneşin hangi cama hangi saatte vurduğunu gösterir. Klima açılmaz. Saçak camı gölgeler, klima daha kısa çalışır.
 
-Kategori: şehir verisi. Doğru Kutu ve Atık Takip’ten ayrıdır.
+**Kategori:** Şehir verisi (OSM + güneş modeli; kişisel klima verisi tutulmaz).
+
+## Etki (jüri özeti)
+
+Örnek senaryo (1,2 kW × 5 daire × 50 sıcak gün):
+
+- Brüt ≈ **1 000 kWh / yıl** → **400 kg CO₂** (× 0,4 kg/kWh)
+- Ayak izi −7 kWh (yerel web + API + opsiyonel IoT) · sıçrama −50 kWh (%5)
+- **Net ≈ 943 kWh / 377 kg CO₂**
+
+Adımlar, varsayımlar ve kaynaklar: [`etki.html`](etki.html)
 
 ## Çalıştırma
 
@@ -10,12 +20,24 @@ Kategori: şehir verisi. Doğru Kutu ve Atık Takip’ten ayrıdır.
 python3 -m http.server 8755 --bind 127.0.0.1
 ```
 
-Tarayıcı: http://127.0.0.1:8755
+Tarayıcı: http://127.0.0.1:8755 · Sunum: `/sunum.html` · Etki: `/etki.html`
 
-Mac uygulaması, Electron olmadan:
+Mac (Electron yok):
 
 ```bash
 macos/kur.sh
 ```
 
-Saati kaydırın. Ok tuşları da saati değiştirir. Ağustos 14.30’ta üçüncü sütun kızarır, balkonlu sütunlar gölgede kalır.
+**Jüri demosu:** uygulamada «Jüri demosu» — veya elle Ağustos → 14.30 → saçak aç.
+
+## Geliştirme notu
+
+Prototip kodu, vaka metninin paylaşılmasından sonraki hazırlık haftasında yazılmıştır. Bu Git deposu yarışma gününde bağlanmış / push edilmiştir; tek commit yığını «önceden hazır ürün getirme» anlamına gelmez. Hazır kütüphaneler: Three.js, Leaflet, Open-Meteo, OpenStreetMap/Overpass.
+
+## Teknoloji
+
+- Güneş: astronomik yükseklik / azimut (istemci)
+- Bina / cephe: OpenStreetMap
+- Hava: Open-Meteo
+- Saçak: program + isteğe bağlı Wi‑Fi / Bluetooth
+- CO₂ katsayısı: ~0,4 kg/kWh (TR şebeke yaklaşık; EEA / ülke elektrik emisyon faktörü bandı — ayrıntı `etki.html`)

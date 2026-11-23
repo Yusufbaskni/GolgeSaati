@@ -779,12 +779,39 @@ body.derece-dusuk .derece-baslik strong {
   font-weight: 700;
 }
 
-.net-etki {
+.net-kutu {
   margin: 0;
-  font-size: 12px;
-  line-height: 1.45;
-  font-weight: 700;
+  padding: 12px 14px;
+  border: 1px solid rgba(158, 212, 168, 0.35);
+  background: rgba(158, 212, 168, 0.08);
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.net-kutu-ust {
+  font-size: 10px;
+  font-weight: 800;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
   color: #9ed4a8;
+}
+
+.net-kutu strong {
+  font-family: var(--yazi);
+  font-size: 26px;
+  letter-spacing: -0.03em;
+  color: #c8efd0;
+  line-height: 1.15;
+}
+
+.net-etki,
+.net-kutu-alt {
+  margin: 0;
+  font-size: 11px;
+  line-height: 1.45;
+  font-weight: 600;
+  color: rgba(158, 212, 168, 0.85);
 }
 
 .kaynak {

@@ -46,6 +46,7 @@
   var yilKwh = document.getElementById("yilKwh");
   var rakamKaynak = document.getElementById("rakamKaynak");
   var netEtkiEl = document.getElementById("netEtki");
+  var netEtkiBuyuk = document.getElementById("netEtkiBuyuk");
   var karbon = document.getElementById("karbon");
   var maliyetYazi = document.getElementById("maliyetYazi");
   var konumYazi = document.getElementById("konumYazi");
@@ -705,13 +706,17 @@
     karbon.textContent =
       "Brüt " + Math.round(yil.yilCo2).toLocaleString("tr-TR") + " kg CO₂ / yıl  ·  " +
       Math.round(yil.yilTl).toLocaleString("tr-TR") + " TL / yıl";
+    if (netEtkiBuyuk) {
+      netEtkiBuyuk.textContent =
+        Math.round(yil.netKwh).toLocaleString("tr-TR") + " kWh  ·  " +
+        Math.round(yil.netCo2).toLocaleString("tr-TR") + " kg CO₂";
+    }
     if (netEtkiEl) {
       netEtkiEl.textContent =
-        "Net " + Math.round(yil.netKwh).toLocaleString("tr-TR") + " kWh / yıl  ·  " +
-        Math.round(yil.netCo2).toLocaleString("tr-TR") + " kg CO₂  ·  " +
-        Math.round(yil.netTl).toLocaleString("tr-TR") + " TL  " +
-        "(ayak izi −" + Math.round(yil.aracKwh + yil.motorKwh) +
-        " · sıçrama −" + Math.round(yil.sicramaKwh) + " kWh)";
+        "Brüt " + Math.round(yil.yilKwh).toLocaleString("tr-TR") +
+        " − ayak izi " + Math.round(yil.aracKwh + yil.motorKwh) +
+        " − sıçrama " + Math.round(yil.sicramaKwh) +
+        "  ·  ~" + Math.round(yil.netTl).toLocaleString("tr-TR") + " TL / yıl";
     }
     if (maliyetYazi) {
       maliyetYazi.textContent = durum.maliyet > 0
@@ -913,17 +918,19 @@
       { t: 30000, metin: "Saçak programı: ne zaman aç, ne zaman kapat", fn: function () {
         durum.sacakVar = false; durum.saat = 11; ciz();
       }},
-      { t: 38000, metin: "Yıllık kWh, TL ve CO₂ · geri ödeme", fn: function () {
+      { t: 38000, metin: "Net etki: ayak izi ve sıçrama düşülmüş kWh / CO₂", fn: function () {
         durum.saat = 14.5; durum.sacakVar = true; ciz();
+        var nk = document.getElementById("netKutu");
+        if (nk) nk.scrollIntoView({ block: "nearest", behavior: "smooth" });
       }},
-      { t: 46000, metin: "40–100 cm saçak seçeneklerini karşılaştır", fn: function () {
+      { t: 48000, metin: "40–100 cm saçak seçeneklerini karşılaştır", fn: function () {
         var kutu = document.getElementById("sacakKarsilastir");
         if (kutu) kutu.scrollIntoView({ block: "nearest", behavior: "smooth" });
       }},
-      { t: 54000, metin: "Şehir verisi + gölge = ölçülebilir sürdürülebilirlik", fn: function () {
+      { t: 56000, metin: "Şehir verisi · kişisel iz yok · net etki pozitif", fn: function () {
         durum.sacakVar = true; ciz();
       }},
-      { t: 62000, metin: "", fn: function () { demoDurdur(); } }
+      { t: 64000, metin: "", fn: function () { demoDurdur(); } }
     ];
 
     adimlar.forEach(function (a) {
